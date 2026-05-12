@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pyc
+*.log
+*.sqlite3
+*.db
+*.env
+.env*
+venv/
+ENV/
+env/
+myenv/
+backend/build/
+backend/__pycache__/
+backend/*.pyc
+
+# Node
+node_modules/
+pm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+/dist/
+/build/
+/.pnp/
+.pnp.js
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# OS generated files
+*.swp
+*~
+*.tmp
+
+# Frontend
+frontend/dist/
+frontend/.turbo/
+
+# Python virtual env in frontend if any
+frontend/node_modules/
