@@ -1,0 +1,24 @@
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:8000/api/v1';
+
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export const analyticsApi = {
+  getNutritionData: (startDate, endDate) => 
+    apiClient.get('/analytics/nutrition-data', { params: { start_date: startDate, end_date: endDate } }),
+  getMacroDistribution: (date) => 
+    apiClient.get('/analytics/macro-distribution', { params: { target_date: date } }),
+  getWeightProgress: (startDate, endDate) => 
+    apiClient.get('/analytics/weight-progress', { params: { start_date: startDate, end_date: endDate } }),
+  getInsights: (days = 7) => apiClient.get('/analytics/insights', { params: { days } }),
+  getMealBreakdown: (date) => apiClient.get('/analytics/meal-breakdown', { params: { target_date: date } }),
+  getSummary: (date) => apiClient.get('/analytics/summary', { params: { target_date: date } }),
+};
+
+export default apiClient;
