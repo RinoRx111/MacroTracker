@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader } from '../components/ui/Card';
 import { CalorieChart } from '../components/charts/CalorieChart';
 import { WeightTrendChart } from '../components/charts/WeightTrendChart';
+import { StepsChart } from '../components/charts/StepsChart';
+import { WaterChart } from '../components/charts/WaterChart';
 import { analyticsApi } from '../api/analyticsApi';
 import { Loader } from '../components/ui/Loader';
 
 export const Analytics = ({ user }) => {
   const [calorieData, setCalorieData] = useState([]);
   const [weightData, setWeightData] = useState([]);
+  const [stepsData, setStepsData] = useState([]);
+  const [waterData, setWaterData] = useState([]);
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +26,7 @@ export const Analytics = ({ user }) => {
       const today = new Date();
       const startDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
 
-      const [nutritionResult, weightResult, insightResult] = await Promise.allSettled([
+      const [nutritionResult, weightResult, insightResult, stepsResult, waterResult] = await Promise.allSettled([
         analyticsApi.getNutritionData(
           startDate.toISOString().split('T')[0],
           today.toISOString().split('T')[0]
@@ -32,11 +36,21 @@ export const Analytics = ({ user }) => {
           today.toISOString().split('T')[0]
         ),
         analyticsApi.getInsights(days),
+        analyticsApi.getStepsData(
+          startDate.toISOString().split('T')[0],
+          today.toISOString().split('T')[0]
+        ),
+        analyticsApi.getWaterData(
+          startDate.toISOString().split('T')[0],
+          today.toISOString().split('T')[0]
+        ),
       ]);
 
       if (nutritionResult.status === 'fulfilled') setCalorieData(nutritionResult.value.data || []);
       if (weightResult.status === 'fulfilled') setWeightData(weightResult.value.data || []);
       if (insightResult.status === 'fulfilled') setInsights(insightResult.value.data);
+      if (stepsResult.status === 'fulfilled') setStepsData(stepsResult.value.data || []);
+      if (waterResult.status === 'fulfilled') setWaterData(waterResult.value.data || []);
     } catch (error) {
       console.error('Error loading analytics:', error);
     } finally {
@@ -71,6 +85,12 @@ export const Analytics = ({ user }) => {
       )}
 
       <CalorieChart data={calorieData} />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <StepsChart data={stepsData} goal={user?.daily_step_goal || 10000} />
+        <WaterChart data={waterData} goal={user?.daily_water_goal_ml || 2000} />
+      </div>
+
       <WeightTrendChart data={weightData} />
 
       {insights && (

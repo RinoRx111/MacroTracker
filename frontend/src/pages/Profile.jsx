@@ -155,6 +155,26 @@ export const Profile = ({ user }) => {
           </div>
         </CardBody>
       </Card>
+
+      <Card>
+        <CardHeader title="Fitness Goals" />
+        <CardBody>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Daily Steps</p>
+              <p className="text-2xl font-bold">{(profile.daily_step_goal ?? 10000).toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Daily Hydration</p>
+              <p className="text-2xl font-bold">{profile.daily_water_goal_ml ?? 2000} ml</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Daily Active Burn</p>
+              <p className="text-2xl font-bold">{profile.daily_calories_burned_goal ?? 500} kcal</p>
+            </div>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 };

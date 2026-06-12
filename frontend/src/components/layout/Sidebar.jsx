@@ -4,6 +4,7 @@ export const Sidebar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) =>
   const links = [
     { label: 'Dashboard', icon: '📊', href: 'dashboard' },
     { label: 'Food Diary', icon: '🍽️', href: 'diary' },
+    { label: 'Workouts', icon: '🏋️', href: 'workouts' },
     { label: 'Analytics', icon: '📈', href: 'analytics' },
     { label: 'Profile', icon: '👤', href: 'profile' },
     { label: 'Settings', icon: '⚙️', href: 'settings' },
@@ -70,6 +71,7 @@ export const Navbar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) => 
             {[
               { label: 'Dashboard', icon: '📊', href: 'dashboard' },
               { label: 'Food Diary', icon: '🍽️', href: 'diary' },
+              { label: 'Workouts', icon: '🏋️', href: 'workouts' },
               { label: 'Analytics', icon: '📈', href: 'analytics' },
               { label: 'Profile', icon: '👤', href: 'profile' },
               { label: 'Settings', icon: '⚙️', href: 'settings' },
@@ -104,6 +106,7 @@ export const MobileNav = ({ activeLink, setActiveLink }) => {
         {[
           { label: '📊', href: 'dashboard' },
           { label: '🍽️', href: 'diary' },
+          { label: '🏋️', href: 'workouts' },
           { label: '📈', href: 'analytics' },
           { label: '👤', href: 'profile' },
           { label: '⚙️', href: 'settings' },

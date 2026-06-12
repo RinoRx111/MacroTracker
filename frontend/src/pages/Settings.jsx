@@ -11,6 +11,9 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
     protein_goal_g: profile?.protein_goal_g || 150,
     carbs_goal_g: profile?.carbs_goal_g || 200,
     fat_goal_g: profile?.fat_goal_g || 65,
+    daily_step_goal: profile?.daily_step_goal || 10000,
+    daily_water_goal_ml: profile?.daily_water_goal_ml || 2000,
+    daily_calories_burned_goal: profile?.daily_calories_burned_goal || 500,
   });
   const [saved, setSaved] = useState(false);
 
@@ -50,6 +53,30 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
               { label: 'Protein Goal (g)', key: 'protein_goal_g', step: '0.1', parse: parseFloat },
               { label: 'Carbs Goal (g)', key: 'carbs_goal_g', step: '0.1', parse: parseFloat },
               { label: 'Fat Goal (g)', key: 'fat_goal_g', step: '0.1', parse: parseFloat },
+            ].map(({ label, key, step, parse }) => (
+              <div key={key}>
+                <label className="block text-sm font-medium mb-2">{label}</label>
+                <input
+                  type="number"
+                  step={step}
+                  value={settings[key]}
+                  onChange={(e) => setSettings({ ...settings, [key]: parse(e.target.value) })}
+                  className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                />
+              </div>
+            ))}
+          </div>
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardHeader title="Fitness Goals" />
+        <CardBody>
+          <div className="space-y-4">
+            {[
+              { label: 'Daily Steps Goal', key: 'daily_step_goal', step: '1', parse: parseInt },
+              { label: 'Daily Water Goal (ml)', key: 'daily_water_goal_ml', step: '50', parse: parseInt },
+              { label: 'Daily Active Calorie Burn Goal (kcal)', key: 'daily_calories_burned_goal', step: '10', parse: parseInt },
             ].map(({ label, key, step, parse }) => (
               <div key={key}>
                 <label className="block text-sm font-medium mb-2">{label}</label>

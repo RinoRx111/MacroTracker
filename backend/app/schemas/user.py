@@ -48,16 +48,30 @@ class UserUpdate(BaseModel):
     protein_goal_g: Optional[float] = Field(None, gt=0)
     carbs_goal_g: Optional[float] = Field(None, gt=0)
     fat_goal_g: Optional[float] = Field(None, gt=0)
+    daily_step_goal: Optional[int] = Field(None, gt=0)
+    daily_water_goal_ml: Optional[int] = Field(None, gt=0)
+    daily_calories_burned_goal: Optional[int] = Field(None, gt=0)
     dark_mode: Optional[bool] = None
 
 
 class UserResponse(BaseModel):
     """Schema for user response."""
     id: int
+    username: str
+    email: EmailStr
+    full_name: Optional[str] = None
+    age: Optional[int] = None
+    weight_kg: Optional[float] = None
+    height_cm: Optional[int] = None
+    gender: Optional[str] = None
+    activity_level: Optional[str] = None
     daily_calorie_goal: int
     protein_goal_g: float
     carbs_goal_g: float
     fat_goal_g: float
+    daily_step_goal: int
+    daily_water_goal_ml: int
+    daily_calories_burned_goal: int
     is_active: bool
     dark_mode: bool
     created_at: datetime
@@ -78,6 +92,9 @@ class UserStatsResponse(BaseModel):
     protein_goal_g: float
     carbs_goal_g: float
     fat_goal_g: float
+    daily_step_goal: int
+    daily_water_goal_ml: int
+    daily_calories_burned_goal: int
 
 
 class SettingsUpdate(BaseModel):
@@ -87,4 +104,7 @@ class SettingsUpdate(BaseModel):
     protein_goal_g: Optional[float] = Field(None, gt=0)
     carbs_goal_g: Optional[float] = Field(None, gt=0)
     fat_goal_g: Optional[float] = Field(None, gt=0)
+    daily_step_goal: Optional[int] = Field(None, gt=0)
+    daily_water_goal_ml: Optional[int] = Field(None, gt=0)
+    daily_calories_burned_goal: Optional[int] = Field(None, gt=0)
 

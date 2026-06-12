@@ -26,6 +26,19 @@ from app.schemas.weight import (
     WeightStats,
     WeeklyProgress,
 )
+from app.schemas.workout import (
+    WorkoutLogCreate,
+    WorkoutLogResponse,
+)
+from app.schemas.activity import (
+    ActivityLogCreate,
+    ActivityLogResponse,
+)
+from app.schemas.water import (
+    WaterLogCreate,
+    WaterLogResponse,
+    WaterLogUpdate,
+)
 
 __all__ = [
     "UserBase",
@@ -48,4 +61,11 @@ __all__ = [
     "WeightTrend",
     "WeightStats",
     "WeeklyProgress",
+    "WorkoutLogCreate",
+    "WorkoutLogResponse",
+    "ActivityLogCreate",
+    "ActivityLogResponse",
+    "WaterLogCreate",
+    "WaterLogResponse",
+    "WaterLogUpdate",
 ]

@@ -14,6 +14,7 @@ venv/
 ENV/
 env/
 myenv/
+.venv/
 backend/build/
 backend/__pycache__/
 backend/*.pyc
@@ -36,15 +37,14 @@ pnpm-lock.yaml
 .idea/
 .DS_Store
 Thumbs.db
-
-# OS generated files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 *.swp
-*~
-*.tmp
+*.swo
 
 # Frontend
 frontend/dist/
 frontend/.turbo/
-
-# Python virtual env in frontend if any
 frontend/node_modules/

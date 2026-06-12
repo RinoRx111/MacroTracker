@@ -29,6 +29,11 @@ class User(Base):
     protein_goal_g = Column(Float, default=150)  # Grams per day
     carbs_goal_g = Column(Float, default=200)    # Grams per day
     fat_goal_g = Column(Float, default=65)       # Grams per day
+
+    # Fitness goals
+    daily_step_goal = Column(Integer, default=10000)
+    daily_water_goal_ml = Column(Integer, default=2000)
+    daily_calories_burned_goal = Column(Integer, default=500)
     
     # Settings
     is_active = Column(Boolean, default=True)

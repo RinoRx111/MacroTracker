@@ -17,11 +17,12 @@ export const CalorieChart = ({ data }) => {
   const chartData = data.map(item => ({
     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     calories: Math.round(item.calories),
+    burned: Math.round(item.calories_burned || 0),
   }));
 
   return (
     <Card>
-      <CardHeader title="Calorie Trends" subtitle="Last 7 days" />
+      <CardHeader title="Calorie Trends" subtitle="Consumed vs Burned (Last 7 days)" />
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
@@ -31,10 +32,19 @@ export const CalorieChart = ({ data }) => {
             <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }} />
             <Line 
               type="monotone" 
+              name="Consumed (kcal)"
               dataKey="calories" 
               stroke="#a78bfa" 
               strokeWidth={2}
               dot={{ fill: '#a78bfa' }}
+            />
+            <Line 
+              type="monotone" 
+              name="Burned (kcal)"
+              dataKey="burned" 
+              stroke="#f43f5e" 
+              strokeWidth={2}
+              dot={{ fill: '#f43f5e' }}
             />
           </LineChart>
         </ResponsiveContainer>

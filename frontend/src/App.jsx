@@ -5,6 +5,7 @@ import { FoodDiary } from './pages/FoodDiary';
 import { Analytics } from './pages/Analytics';
 import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
+import { WorkoutTracker } from './pages/WorkoutTracker';
 import { useFood } from './hooks/useFood';
 import { useProfile } from './hooks/useProfile';
 import { analyticsApi } from './api/analyticsApi';
@@ -44,9 +45,11 @@ function App() {
   const renderPage = () => {
     switch (activeLink) {
       case 'dashboard':
-        return <Dashboard user={profile} profile={profile} loading={profileLoading} dailySummary={dailySummary} />;
+        return <Dashboard user={profile} profile={profile} loading={profileLoading} dailySummary={dailySummary} reloadSummary={loadDailySummary} />;
       case 'diary':
         return <FoodDiary user={profile} />;
+      case 'workouts':
+        return <WorkoutTracker />;
       case 'analytics':
         return <Analytics user={profile} />;
       case 'profile':

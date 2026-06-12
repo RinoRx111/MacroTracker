@@ -8,6 +8,7 @@ from sqlalchemy import func
 from app.models.food import FoodLog
 from app.models.weight import WeightLog
 from app.models.user import User
+from app.models.workout import WorkoutLog
 from app.utils.calculations import calculate_macro_percentages
 from app.utils.helpers import get_date_range
 
@@ -22,17 +23,23 @@ class AnalyticsService:
         start_date: date,
         end_date: date,
     ) -> List[Dict[str, Any]]:
-        """Get daily nutrition data for analytics."""
-        logs = db.query(FoodLog).filter(
+        """Get daily nutrition data and active calories burned for analytics."""
+        food_logs = db.query(FoodLog).filter(
             FoodLog.user_id == user_id,
             FoodLog.logged_date >= start_date,
             FoodLog.logged_date <= end_date,
         ).all()
 
+        workout_logs = db.query(WorkoutLog).filter(
+            WorkoutLog.user_id == user_id,
+            WorkoutLog.logged_date >= start_date,
+            WorkoutLog.logged_date <= end_date,
+        ).all()
+
         # Group by date
         daily_data: Dict[date, Dict] = {}
 
-        for log in logs:
+        for log in food_logs:
             if log.logged_date not in daily_data:
                 daily_data[log.logged_date] = {
                     "date": log.logged_date,
@@ -41,6 +48,7 @@ class AnalyticsService:
                     "carbs": 0,
                     "fat": 0,
                     "fiber": 0,
+                    "calories_burned": 0,
                 }
 
             daily_data[log.logged_date]["calories"] += log.calories_kcal
@@ -48,6 +56,19 @@ class AnalyticsService:
             daily_data[log.logged_date]["carbs"] += log.carbs_g
             daily_data[log.logged_date]["fat"] += log.fat_g
             daily_data[log.logged_date]["fiber"] += log.fiber_g or 0
+
+        for log in workout_logs:
+            if log.logged_date not in daily_data:
+                daily_data[log.logged_date] = {
+                    "date": log.logged_date,
+                    "calories": 0,
+                    "protein": 0,
+                    "carbs": 0,
+                    "fat": 0,
+                    "fiber": 0,
+                    "calories_burned": 0,
+                }
+            daily_data[log.logged_date]["calories_burned"] += log.calories_burned
 
         # Fill in missing dates
         for d in get_date_range(start_date, end_date):
@@ -59,6 +80,7 @@ class AnalyticsService:
                     "carbs": 0,
                     "fat": 0,
                     "fiber": 0,
+                    "calories_burned": 0,
                 }
 
         return sorted(daily_data.values(), key=lambda x: x["date"])

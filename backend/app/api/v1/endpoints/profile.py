@@ -72,6 +72,12 @@ async def update_profile(
         user.carbs_goal_g = profile_data.carbs_goal_g
     if profile_data.fat_goal_g is not None:
         user.fat_goal_g = profile_data.fat_goal_g
+    if profile_data.daily_step_goal is not None:
+        user.daily_step_goal = profile_data.daily_step_goal
+    if profile_data.daily_water_goal_ml is not None:
+        user.daily_water_goal_ml = profile_data.daily_water_goal_ml
+    if profile_data.daily_calories_burned_goal is not None:
+        user.daily_calories_burned_goal = profile_data.daily_calories_burned_goal
     if profile_data.dark_mode is not None:
         user.dark_mode = profile_data.dark_mode
 
@@ -107,6 +113,9 @@ async def get_user_stats(
         protein_goal_g=user.protein_goal_g,
         carbs_goal_g=user.carbs_goal_g,
         fat_goal_g=user.fat_goal_g,
+        daily_step_goal=user.daily_step_goal,
+        daily_water_goal_ml=user.daily_water_goal_ml,
+        daily_calories_burned_goal=user.daily_calories_burned_goal,
     )
 
 
@@ -127,6 +136,12 @@ async def update_settings(
         user.carbs_goal_g = settings_data.carbs_goal_g
     if settings_data.fat_goal_g is not None:
         user.fat_goal_g = settings_data.fat_goal_g
+    if settings_data.daily_step_goal is not None:
+        user.daily_step_goal = settings_data.daily_step_goal
+    if settings_data.daily_water_goal_ml is not None:
+        user.daily_water_goal_ml = settings_data.daily_water_goal_ml
+    if settings_data.daily_calories_burned_goal is not None:
+        user.daily_calories_burned_goal = settings_data.daily_calories_burned_goal
 
     db.commit()
     db.refresh(user)
