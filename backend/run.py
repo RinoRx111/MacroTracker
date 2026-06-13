@@ -10,8 +10,8 @@ sys.path.append(str(backend_path))
 import uvicorn
 
 if __name__ == "__main__":
-    print(f"🚀 Launching MacroTracker in Single-Process Mode...")
-    print(f"📂 Backend Root: {backend_path}")
+    print(f"Launching MacroTracker in Single-Process Mode...")
+    print(f"Backend Root: {backend_path}")
     
     try:
         # We use "app.main:app"
@@ -25,4 +25,4 @@ if __name__ == "__main__":
             log_level="info"
         )
     except Exception as e:
-        print(f"❌ Critical Error: {e}")
+        print(f"Critical Error: {e}")

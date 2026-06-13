@@ -18,6 +18,8 @@ export const foodApi = {
   deleteFoodLog: (id) => apiClient.delete(`/food/logs/${id}`),
   createCustomFood: (data) => apiClient.post('/food/custom-foods', data),
   getCustomFoods: () => apiClient.get('/food/custom-foods'),
+  parseFoodText: (text) => apiClient.post('/food/parse-text', { text }),
+  createFoodLogsBatch: (logs) => apiClient.post('/food/logs/batch', logs),
 };
 
 export default apiClient;

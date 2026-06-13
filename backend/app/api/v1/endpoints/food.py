@@ -1,7 +1,7 @@
 """Food endpoints for managing nutrition logs."""
 
 from typing import List
-from datetime import date
+from datetime import date, datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
@@ -16,6 +16,7 @@ from app.schemas.food import (
 )
 from app.services.food_service import FoodService
 from app.services.nutrition_provider import NutritionProvider
+from app.services.food_parser_service import FoodParserService
 from app.models.user import User
 
 router = APIRouter(prefix="/food", tags=["food"])
@@ -196,3 +197,57 @@ async def delete_custom_food(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Custom food not found",
         )
+
+
+@router.post("/parse-text")
+async def parse_food_text(
+    payload: dict,
+    user: User = Depends(get_current_user),
+):
+    """Parse freeform food text into structured food logs."""
+    text = payload.get("text", "")
+    if not text:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing 'text' in payload",
+        )
+    
+    parsed_items = await FoodParserService.parse_text(text)
+    
+    # Automatically determine the meal type based on current hour
+    hour = datetime.now().hour
+    if 5 <= hour < 11:
+        meal_type = "breakfast"
+    elif 11 <= hour < 17:
+        meal_type = "lunch"
+    elif 17 <= hour < 22:
+        meal_type = "dinner"
+    else:
+        meal_type = "snack"
+
+    results = []
+    for item in parsed_items:
+        results.append({
+            "food_name": item["food_name"],
+            "portion_size": item["portion_size"],
+            "portion_unit": item["portion_unit"],
+            "calories_kcal": item["calories_kcal"],
+            "protein_g": item["protein_g"],
+            "carbs_g": item["carbs_g"],
+            "fat_g": item["fat_g"],
+            "meal_type": meal_type,
+            "logged_date": date.today().isoformat()
+        })
+        
+    return results
+
+
+@router.post("/logs/batch", response_model=List[FoodLogResponse])
+async def create_food_logs_batch(
+    food_logs: List[FoodLogCreate],
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> List[FoodLogResponse]:
+    """Create a batch of food log entries."""
+    logs = FoodService.create_food_logs_batch(db, user.id, food_logs)
+    return logs

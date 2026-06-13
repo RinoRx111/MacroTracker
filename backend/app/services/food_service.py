@@ -191,3 +191,38 @@ class FoodService:
         db.delete(custom_food)
         db.commit()
         return True
+
+    @staticmethod
+    def create_food_logs_batch(
+        db: Session,
+        user_id: int,
+        food_logs_data: List[FoodLogCreate],
+    ) -> List[FoodLog]:
+        """Create a batch of food log entries in a single transaction."""
+        db_logs = []
+        for item in food_logs_data:
+            db_food_log = FoodLog(
+                user_id=user_id,
+                food_name=item.food_name,
+                food_code=item.food_code,
+                brand=item.brand,
+                portion_size=item.portion_size,
+                portion_unit=item.portion_unit,
+                serving_size=item.serving_size,
+                serving_unit=item.serving_unit,
+                calories_kcal=item.calories_kcal,
+                protein_g=item.protein_g,
+                carbs_g=item.carbs_g,
+                fat_g=item.fat_g,
+                fiber_g=item.fiber_g,
+                sugar_g=item.sugar_g,
+                sodium_mg=item.sodium_mg,
+                meal_type=item.meal_type,
+                logged_date=item.logged_date or date.today(),
+            )
+            db.add(db_food_log)
+            db_logs.append(db_food_log)
+        db.commit()
+        for log in db_logs:
+            db.refresh(log)
+        return db_logs

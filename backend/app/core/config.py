@@ -35,10 +35,12 @@ class Settings(BaseSettings):
     
     # External APIs
     OPEN_FOOD_FACTS_BASE_URL: str = "https://world.openfoodfacts.org"
+    GROQ_API_KEY: Optional[str] = None
     
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"
 
 
 settings = Settings()

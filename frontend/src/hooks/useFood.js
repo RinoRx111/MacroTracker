@@ -69,6 +69,29 @@ export const useFood = () => {
     }
   };
 
+  const parseFoodText = async (text) => {
+    try {
+      const response = await foodApi.parseFoodText(text);
+      return response.data;
+    } catch (err) {
+      setError(err.message);
+      console.error('Error parsing food text:', err);
+      return null;
+    }
+  };
+
+  const addFoodLogsBatch = async (logs) => {
+    try {
+      const response = await foodApi.createFoodLogsBatch(logs);
+      setFoods(prev => [...prev, ...response.data]);
+      return response.data;
+    } catch (err) {
+      setError(err.message);
+      console.error('Error batch adding food logs:', err);
+      return null;
+    }
+  };
+
   return {
     foods,
     loading,
@@ -78,5 +101,7 @@ export const useFood = () => {
     addFoodLog,
     searchFoods,
     deleteFoodLog,
+    parseFoodText,
+    addFoodLogsBatch,
   };
 };
