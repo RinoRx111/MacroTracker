@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_MODEL = "llama3-8b-8192"
+GROQ_MODEL = "llama-3.1-8b-instant"
 
 # Local database of common foods with nutrition stats per 100g and default unit weights
 COMMON_FOODS = {
@@ -106,7 +106,43 @@ class FoodParserService:
                 data = response.json()
                 content = data["choices"][0]["message"]["content"]
                 result = json.loads(content)
-                return result.get("items", [])
+                items = result.get("items", [])
+                
+                scaled_items = []
+                for item in items:
+                    name = item.get("food_name", "").lower()
+                    portions = float(item.get("portion_size", 100.0))
+                    
+                    # Try to find a match in COMMON_FOODS to get exact macros
+                    matched_info = None
+                    for common_name, info in COMMON_FOODS.items():
+                        if common_name in name or name in common_name:
+                            matched_info = info
+                            break
+                            
+                    if matched_info:
+                        ratio = portions / 100.0
+                        scaled_items.append({
+                            "food_name": item.get("food_name").capitalize(),
+                            "portion_size": portions,
+                            "portion_unit": "g",
+                            "calories_kcal": round(matched_info["calories_per_100g"] * ratio, 1),
+                            "protein_g": round(matched_info["protein_per_100g"] * ratio, 1),
+                            "carbs_g": round(matched_info["carbs_per_100g"] * ratio, 1),
+                            "fat_g": round(matched_info["fat_per_100g"] * ratio, 1),
+                        })
+                    else:
+                        # Fallback: keep LLM's macros but scaled/formatted cleanly
+                        scaled_items.append({
+                            "food_name": item.get("food_name").capitalize(),
+                            "portion_size": portions,
+                            "portion_unit": "g",
+                            "calories_kcal": round(float(item.get("calories_kcal", 0.0)), 1),
+                            "protein_g": round(float(item.get("protein_g", 0.0)), 1),
+                            "carbs_g": round(float(item.get("carbs_g", 0.0)), 1),
+                            "fat_g": round(float(item.get("fat_g", 0.0)), 1),
+                        })
+                return scaled_items
             else:
                 print(f"Groq API returned status code {response.status_code}: {response.text}")
                 return None
