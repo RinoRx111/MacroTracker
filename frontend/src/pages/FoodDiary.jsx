@@ -161,24 +161,28 @@ export const FoodDiary = ({ user }) => {
         emoji="🌅"
         foods={mealFoods.breakfast}
         onAddFood={() => { setSelectedMeal('breakfast'); setShowSearchModal(true); }}
+        onDeleteFood={deleteFoodLog}
       />
       <MealSection
         title="Lunch"
         emoji="🥗"
         foods={mealFoods.lunch}
         onAddFood={() => { setSelectedMeal('lunch'); setShowSearchModal(true); }}
+        onDeleteFood={deleteFoodLog}
       />
       <MealSection
         title="Dinner"
         emoji="🍽️"
         foods={mealFoods.dinner}
         onAddFood={() => { setSelectedMeal('dinner'); setShowSearchModal(true); }}
+        onDeleteFood={deleteFoodLog}
       />
       <MealSection
         title="Snacks"
         emoji="🍿"
         foods={mealFoods.snack}
         onAddFood={() => { setSelectedMeal('snack'); setShowSearchModal(true); }}
+        onDeleteFood={deleteFoodLog}
       />
 
       {showSearchModal && (

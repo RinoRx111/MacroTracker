@@ -12,7 +12,8 @@ class NutritionProvider:
     async def search_food(query: str, limit: int = 20) -> List[Dict[str, Any]]:
         """Search for foods from Open Food Facts API."""
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            headers = {"User-Agent": "MacroTracker - Windows - Version 1.0"}
+            async with httpx.AsyncClient(timeout=10.0, headers=headers) as client:
                 url = f"{settings.OPEN_FOOD_FACTS_BASE_URL}/cgi/search.pl"
                 params = {
                     "search_terms": query,
@@ -41,7 +42,8 @@ class NutritionProvider:
     async def get_food_by_barcode(barcode: str) -> Optional[Dict[str, Any]]:
         """Get food information by barcode from Open Food Facts."""
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            headers = {"User-Agent": "MacroTracker - Windows - Version 1.0"}
+            async with httpx.AsyncClient(timeout=10.0, headers=headers) as client:
                 url = f"{settings.OPEN_FOOD_FACTS_BASE_URL}/api/v0/product/{barcode}.json"
                 response = await client.get(url)
                 response.raise_for_status()
@@ -97,7 +99,8 @@ class NutritionProvider:
 
         # Try alternative endpoint
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            headers = {"User-Agent": "MacroTracker - Windows - Version 1.0"}
+            async with httpx.AsyncClient(timeout=10.0, headers=headers) as client:
                 url = f"{settings.OPEN_FOOD_FACTS_BASE_URL}/cgi/search.pl"
                 params = {
                     "code": barcode,

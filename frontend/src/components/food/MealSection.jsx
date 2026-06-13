@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '../ui/Card';
 
-export const MealSection = ({ title, emoji, foods = [], onAddFood }) => {
+export const MealSection = ({ title, emoji, foods = [], onAddFood, onDeleteFood }) => {
   const totalCalories = foods.reduce((sum, f) => sum + (f.calories_kcal || 0), 0);
   const totalProtein = foods.reduce((sum, f) => sum + (f.protein_g || 0), 0);
   const totalCarbs = foods.reduce((sum, f) => sum + (f.carbs_g || 0), 0);
@@ -31,8 +31,19 @@ export const MealSection = ({ title, emoji, foods = [], onAddFood }) => {
                 <p className="font-medium text-gray-900 dark:text-white">{food.food_name}</p>
                 <p className="text-xs text-gray-500">{food.portion_size}{food.portion_unit}</p>
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900 dark:text-white">{Math.round(food.calories_kcal)}</p>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="font-semibold text-gray-900 dark:text-white">{Math.round(food.calories_kcal)}</p>
+                </div>
+                {onDeleteFood && (
+                  <button
+                    onClick={() => onDeleteFood(food.id)}
+                    className="text-red-500 hover:text-red-700 hover:scale-110 transition-all p-1.5 focus:outline-none"
+                    title="Delete entry"
+                  >
+                    🗑️
+                  </button>
+                )}
               </div>
             </div>
           ))}

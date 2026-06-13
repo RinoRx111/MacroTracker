@@ -55,7 +55,7 @@ class FoodParserService:
                 if parsed_items:
                     return parsed_items
             except Exception as e:
-                print(f"⚠️ Groq API parsing failed, falling back to local: {e}")
+                print(f"[WARNING] Groq API parsing failed, falling back to local: {e}")
 
         # 2. Fallback to local parsing
         return FoodParserService._parse_locally(text)
@@ -66,20 +66,22 @@ class FoodParserService:
         system_prompt = (
             "You are a precise nutrition and macro tracking assistant. "
             "Your task is to parse a text entry containing foods and their quantities into a JSON list of structured food items. "
-            "For each food item, estimate the weight in grams (portion_size), and compute the calories_kcal, protein_g, carbs_g, and fat_g. "
-            "Be realistic: chicken breast is ~165 kcal / 31g protein per 100g. A large egg is ~50g with 78 kcal, 6g protein, 5g fat. A chapati of 50g is ~130 kcal, 4g protein, 25g carbs. "
-            "Output strictly a JSON object with a single root key 'items' containing the list of parsed foods. "
+            "For each food item: \n"
+            "1. Extract the name of the food ('food_name'). If a brand is specified (e.g. 'Nutella', 'Amul', 'Fage', 'Oreo'), search your knowledge base and use that specific brand's exact product info.\n"
+            "2. Estimate the total consumed weight in grams ('portion_size'). If count-based, compute total grams (e.g. 4 eggs = 200g, 1 banana = 120g).\n"
+            "3. Retrieve or estimate the nutritional values strictly PER 100g of this food item: 'calories_per_100g', 'protein_per_100g', 'carbs_per_100g', and 'fat_per_100g'.\n"
+            "Output strictly a JSON object with a single root key 'items' containing the list of parsed foods.\n"
             "Schema: \n"
             "{\n"
             "  \"items\": [\n"
             "    {\n"
-            "      \"food_name\": \"string (name of food)\",\n"
+            "      \"food_name\": \"string (name of food including brand if specified)\",\n"
             "      \"portion_size\": float (portion weight in grams),\n"
             "      \"portion_unit\": \"g\",\n"
-            "      \"calories_kcal\": float,\n"
-            "      \"protein_g\": float,\n"
-            "      \"carbs_g\": float,\n"
-            "      \"fat_g\": float\n"
+            "      \"calories_per_100g\": float,\n"
+            "      \"protein_per_100g\": float,\n"
+            "      \"carbs_per_100g\": float,\n"
+            "      \"fat_per_100g\": float\n"
             "    }\n"
             "  ]\n"
             "}"
@@ -132,16 +134,39 @@ class FoodParserService:
                             "fat_g": round(matched_info["fat_per_100g"] * ratio, 1),
                         })
                     else:
-                        # Fallback: keep LLM's macros but scaled/formatted cleanly
-                        scaled_items.append({
-                            "food_name": item.get("food_name").capitalize(),
-                            "portion_size": portions,
-                            "portion_unit": "g",
-                            "calories_kcal": round(float(item.get("calories_kcal", 0.0)), 1),
-                            "protein_g": round(float(item.get("protein_g", 0.0)), 1),
-                            "carbs_g": round(float(item.get("carbs_g", 0.0)), 1),
-                            "fat_g": round(float(item.get("fat_g", 0.0)), 1),
-                        })
+                        # Fallback/Brand: search Open Food Facts API as fallback / enrichment
+                        from app.services.nutrition_provider import NutritionProvider
+                        off_info = None
+                        try:
+                            # Try searching Open Food Facts with the parsed food name
+                            off_results = await NutritionProvider.search_food(item.get("food_name", ""), limit=1)
+                            if off_results and len(off_results) > 0:
+                                off_info = off_results[0]
+                        except Exception as off_err:
+                            print(f"[WARNING] Open Food Facts search fallback failed: {off_err}")
+
+                        ratio = portions / 100.0
+                        if off_info and off_info.get("calories_per_100g") is not None:
+                            scaled_items.append({
+                                "food_name": item.get("food_name").capitalize(),
+                                "portion_size": portions,
+                                "portion_unit": "g",
+                                "calories_kcal": round(float(off_info.get("calories_per_100g", 0.0)) * ratio, 1),
+                                "protein_g": round(float(off_info.get("protein_per_100g", 0.0)) * ratio, 1),
+                                "carbs_g": round(float(off_info.get("carbs_per_100g", 0.0)) * ratio, 1),
+                                "fat_g": round(float(off_info.get("fat_per_100g", 0.0)) * ratio, 1),
+                            })
+                        else:
+                            # Fallback/Brand: scale the LLM's returned per-100g macros in Python!
+                            scaled_items.append({
+                                "food_name": item.get("food_name").capitalize(),
+                                "portion_size": portions,
+                                "portion_unit": "g",
+                                "calories_kcal": round(float(item.get("calories_per_100g", 0.0)) * ratio, 1),
+                                "protein_g": round(float(item.get("protein_per_100g", 0.0)) * ratio, 1),
+                                "carbs_g": round(float(item.get("carbs_per_100g", 0.0)) * ratio, 1),
+                                "fat_g": round(float(item.get("fat_per_100g", 0.0)) * ratio, 1),
+                            })
                 return scaled_items
             else:
                 print(f"Groq API returned status code {response.status_code}: {response.text}")
