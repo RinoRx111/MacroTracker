@@ -28,6 +28,9 @@ export const calculateCalorieTarget = (weight, height, age, gender, activity) =>
 };
 
 export const calculateBMI = (weight, height) => {
+  if (!weight || !height || height <= 0 || weight <= 0) {
+    return { bmi: 0, category: 'Unknown' };
+  }
   const heightM = height / 100;
   const bmi = weight / (heightM * heightM);
   

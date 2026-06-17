@@ -53,6 +53,9 @@ def calculate_macro_percentages(
 
 def calculate_bmi(weight_kg: float, height_cm: float) -> Tuple[float, str]:
     """Calculate Body Mass Index and category."""
+    if not weight_kg or not height_cm or height_cm <= 0 or weight_kg <= 0:
+        return 0.0, "unknown"
+        
     height_m = height_cm / 100
     bmi = weight_kg / (height_m ** 2)
 
