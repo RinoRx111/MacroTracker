@@ -53,7 +53,9 @@ function startBackend() {
   
   // Define executable paths
   const devPath = path.join(__dirname, '..', 'backend', 'run.py');
-  const prodExePath = path.join(__dirname, '..', 'backend', 'dist', 'backend_server.exe');
+  const prodExePath = isPackaged
+    ? path.join(process.resourcesPath, 'backend_server.exe')
+    : path.join(__dirname, '..', 'backend', 'dist', 'backend_server.exe');
   
   let backendPath = devPath;
   let useExe = false;

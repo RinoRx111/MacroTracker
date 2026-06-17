@@ -47,5 +47,7 @@ Thumbs.db
 
 # Frontend
 frontend/dist/
+frontend/dist-desktop/
+frontend/sign.js
 frontend/.turbo/
 frontend/node_modules/
