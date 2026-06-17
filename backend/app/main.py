@@ -137,3 +137,37 @@ async def debug_users():
         return result
     except Exception as e:
         return {"error": str(e)}
+
+
+# Serve frontend static files
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+import sys
+
+# Compute the path to frontend/dist
+# If running frozen inside PyInstaller, use sys._MEIPASS
+if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+    dist_dir = os.path.join(sys._MEIPASS, "frontend", "dist")
+else:
+    # __file__ is backend/app/main.py, dist is at MacroTracker/frontend/dist
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+
+print(f"Frontend dist directory configured at: {dist_dir}")
+
+if os.path.exists(dist_dir):
+    assets_dir = os.path.join(dist_dir, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{path:path}")
+    async def serve_frontend(path: str):
+        if path.startswith("api/") or path.startswith("docs") or path.startswith("openapi.json"):
+            return None
+        file_path = os.path.join(dist_dir, path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(dist_dir, "index.html"))
+else:
+    print(f"Warning: Frontend dist directory does not exist at {dist_dir}")
+
