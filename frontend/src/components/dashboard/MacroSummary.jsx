@@ -11,7 +11,7 @@ export const MacroSummary = ({ summary }) => {
     );
   }
 
-  const { protein_percentage, carbs_percentage, fat_percentage } = summary.macro_percentages || {};
+  const { protein, carbs, fat } = summary.macro_percentages || {};
 
   return (
     <Card>
@@ -22,13 +22,13 @@ export const MacroSummary = ({ summary }) => {
             <div className="flex justify-between mb-2">
               <span className="font-medium text-gray-700 dark:text-gray-300">Protein</span>
               <span className="text-sm font-semibold" style={{ color: COLORS.protein }}>
-                {protein_percentage || 0}%
+                {protein || 0}%
               </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div className="h-full rounded-full" style={{ 
                 backgroundColor: COLORS.protein, 
-                width: `${protein_percentage || 0}%` 
+                width: `${protein || 0}%` 
               }} />
             </div>
           </div>
@@ -37,13 +37,13 @@ export const MacroSummary = ({ summary }) => {
             <div className="flex justify-between mb-2">
               <span className="font-medium text-gray-700 dark:text-gray-300">Carbs</span>
               <span className="text-sm font-semibold" style={{ color: COLORS.carbs }}>
-                {carbs_percentage || 0}%
+                {carbs || 0}%
               </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div className="h-full rounded-full" style={{ 
                 backgroundColor: COLORS.carbs, 
-                width: `${carbs_percentage || 0}%` 
+                width: `${carbs || 0}%` 
               }} />
             </div>
           </div>
@@ -52,13 +52,13 @@ export const MacroSummary = ({ summary }) => {
             <div className="flex justify-between mb-2">
               <span className="font-medium text-gray-700 dark:text-gray-300">Fat</span>
               <span className="text-sm font-semibold" style={{ color: COLORS.fat }}>
-                {fat_percentage || 0}%
+                {fat || 0}%
               </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div className="h-full rounded-full" style={{ 
                 backgroundColor: COLORS.fat, 
-                width: `${fat_percentage || 0}%` 
+                width: `${fat || 0}%` 
               }} />
             </div>
           </div>

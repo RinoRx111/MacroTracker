@@ -9,6 +9,12 @@ import { ActivityTracker } from '../components/dashboard/ActivityTracker';
 import { CircularProgress } from '../components/ui/ProgressBar';
 
 export const Dashboard = ({ user, profile, loading, dailySummary, reloadSummary }) => {
+  React.useEffect(() => {
+    if (reloadSummary) {
+      reloadSummary();
+    }
+  }, []);
+
   if (loading) {
     return <Loader fullPage />;
   }

@@ -47,7 +47,7 @@ function App() {
       case 'dashboard':
         return <Dashboard user={profile} profile={profile} loading={profileLoading} dailySummary={dailySummary} reloadSummary={loadDailySummary} />;
       case 'diary':
-        return <FoodDiary user={profile} />;
+        return <FoodDiary user={profile} onFoodChange={loadDailySummary} />;
       case 'workouts':
         return <WorkoutTracker />;
       case 'analytics':

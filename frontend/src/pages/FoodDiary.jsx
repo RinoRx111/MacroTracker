@@ -5,7 +5,7 @@ import { FoodSearch } from '../components/food/FoodSearch';
 import { MealSection } from '../components/food/MealSection';
 import { useFood } from '../hooks/useFood';
 
-export const FoodDiary = ({ user }) => {
+export const FoodDiary = ({ user, onFoodChange }) => {
   const { foods, loading, error, fetchDailyLogs, addFoodLog, searchFoods, deleteFoodLog, parseFoodText, addFoodLogsBatch } = useFood();
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState('breakfast');
@@ -46,6 +46,7 @@ export const FoodDiary = ({ user }) => {
     };
     await addFoodLog(foodLog);
     setShowSearchModal(false);
+    if (onFoodChange) onFoodChange();
   };
 
   const handleParseText = async (e) => {
@@ -77,12 +78,18 @@ export const FoodDiary = ({ user }) => {
       const loggedData = await addFoodLogsBatch(parsedPreview);
       if (loggedData) {
         handleClearPreview();
+        if (onFoodChange) onFoodChange();
       }
     } catch (err) {
       console.error('Error batch logging foods:', err);
     } finally {
       setParsing(false);
     }
+  };
+
+  const handleDeleteFood = async (id) => {
+    await deleteFoodLog(id);
+    if (onFoodChange) onFoodChange();
   };
 
   const totalCalories = Object.values(mealFoods)
@@ -161,28 +168,28 @@ export const FoodDiary = ({ user }) => {
         emoji="🌅"
         foods={mealFoods.breakfast}
         onAddFood={() => { setSelectedMeal('breakfast'); setShowSearchModal(true); }}
-        onDeleteFood={deleteFoodLog}
+        onDeleteFood={handleDeleteFood}
       />
       <MealSection
         title="Lunch"
         emoji="🥗"
         foods={mealFoods.lunch}
         onAddFood={() => { setSelectedMeal('lunch'); setShowSearchModal(true); }}
-        onDeleteFood={deleteFoodLog}
+        onDeleteFood={handleDeleteFood}
       />
       <MealSection
         title="Dinner"
         emoji="🍽️"
         foods={mealFoods.dinner}
         onAddFood={() => { setSelectedMeal('dinner'); setShowSearchModal(true); }}
-        onDeleteFood={deleteFoodLog}
+        onDeleteFood={handleDeleteFood}
       />
       <MealSection
         title="Snacks"
         emoji="🍿"
         foods={mealFoods.snack}
         onAddFood={() => { setSelectedMeal('snack'); setShowSearchModal(true); }}
-        onDeleteFood={deleteFoodLog}
+        onDeleteFood={handleDeleteFood}
       />
 
       {showSearchModal && (
