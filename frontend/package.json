@@ -42,12 +42,19 @@
       {
         "from": "../backend/dist/backend_server.exe",
         "to": "backend_server.exe"
+      },
+      {
+        "from": "dist",
+        "to": "dist"
       }
     ],
     "win": {
       "target": [
         "portable"
-      ]
+      ],
+      "signtoolOptions": {
+        "sign": "./sign.cjs"
+      }
     }
   }
 }

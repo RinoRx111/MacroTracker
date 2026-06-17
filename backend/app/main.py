@@ -105,9 +105,35 @@ app.add_middleware(
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
+# Serve frontend static files config
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+import sys
+
+# Compute the path to frontend/dist
+# If running frozen inside PyInstaller, check next to exe or use sys._MEIPASS
+if getattr(sys, "frozen", False):
+    exe_dir = os.path.dirname(sys.executable)
+    prod_dist_dir = os.path.join(exe_dir, "dist")
+    if os.path.exists(prod_dist_dir):
+        dist_dir = prod_dist_dir
+    else:
+        dist_dir = os.path.join(getattr(sys, "_MEIPASS", ""), "frontend", "dist")
+else:
+    # Development structure
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+
+print(f"Frontend dist directory configured at: {dist_dir}")
+
+
 @app.get("/")
 async def root():
-    """Root endpoint."""
+    """Root endpoint. Serves frontend index.html if available, else API metadata."""
+    index_path = os.path.join(dist_dir, "index.html") if dist_dir else ""
+    if index_path and os.path.exists(index_path):
+        return FileResponse(index_path)
+        
     return {
         "app": settings.APP_NAME,
         "version": settings.APP_VERSION,
@@ -138,22 +164,6 @@ async def debug_users():
     except Exception as e:
         return {"error": str(e)}
 
-
-# Serve frontend static files
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-import os
-import sys
-
-# Compute the path to frontend/dist
-# If running frozen inside PyInstaller, use sys._MEIPASS
-if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
-    dist_dir = os.path.join(sys._MEIPASS, "frontend", "dist")
-else:
-    # __file__ is backend/app/main.py, dist is at MacroTracker/frontend/dist
-    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
-
-print(f"Frontend dist directory configured at: {dist_dir}")
 
 if os.path.exists(dist_dir):
     assets_dir = os.path.join(dist_dir, "assets")
