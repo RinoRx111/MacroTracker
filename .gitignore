@@ -16,6 +16,7 @@ env/
 myenv/
 .venv/
 backend/build/
+backend/dist/
 backend/__pycache__/
 backend/*.pyc
 
