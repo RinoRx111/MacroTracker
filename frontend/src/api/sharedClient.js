@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
 let cache = {};
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
