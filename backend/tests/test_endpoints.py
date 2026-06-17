@@ -144,3 +144,30 @@ def test_weight_logs(client):
     assert latest_response.status_code == 200
     latest_data = latest_response.json()
     assert latest_data["weight_kg"] == 71.5
+
+def test_weight_upsert(client):
+    # Log initial weight
+    payload1 = {
+        "weight_kg": 72.0,
+        "weight_date": date.today().isoformat(),
+        "notes": "First weight of day"
+    }
+    response1 = client.post("/api/v1/weight/logs", json=payload1)
+    assert response1.status_code == 200
+    assert response1.json()["weight_kg"] == 72.0
+
+    # Log updated weight for the same day
+    payload2 = {
+        "weight_kg": 71.8,
+        "weight_date": date.today().isoformat(),
+        "notes": "Updated weight of day"
+    }
+    response2 = client.post("/api/v1/weight/logs", json=payload2)
+    assert response2.status_code == 200
+    assert response2.json()["weight_kg"] == 71.8
+
+    # Verify that the user profile weight is updated
+    profile_response = client.get("/api/v1/profile/me")
+    assert profile_response.status_code == 200
+    assert profile_response.json()["weight_kg"] == 71.8
+

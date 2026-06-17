@@ -7,8 +7,12 @@ import { Loader } from '../components/ui/Loader';
 import { WaterTracker } from '../components/dashboard/WaterTracker';
 import { ActivityTracker } from '../components/dashboard/ActivityTracker';
 import { CircularProgress } from '../components/ui/ProgressBar';
+import { Button } from '../components/ui/Button';
+import { CalendarWidget } from '../components/dashboard/CalendarWidget';
 
 export const Dashboard = ({ user, profile, loading, dailySummary, reloadSummary }) => {
+  const [showCalendar, setShowCalendar] = React.useState(false);
+
   React.useEffect(() => {
     if (reloadSummary) {
       reloadSummary();
@@ -29,6 +33,23 @@ export const Dashboard = ({ user, profile, loading, dailySummary, reloadSummary 
 
   return (
     <div className="space-y-6 pb-20 md:pb-6">
+      <div className="flex justify-end">
+        <Button 
+          variant="secondary" 
+          onClick={() => setShowCalendar(!showCalendar)}
+          className="flex items-center gap-2 border border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/10 hover:bg-purple-100 dark:hover:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-bold px-4 py-2 rounded-xl transition-all"
+        >
+          <span>{showCalendar ? '📅 Hide Calendar History' : '📅 Show Calendar History'}</span>
+        </Button>
+      </div>
+
+      {showCalendar && (
+        <CalendarWidget 
+          user={profile} 
+          onWeightLogged={reloadSummary} 
+        />
+      )}
+
       {dailySummary && (
         <CalorieCard
           current={dailySummary.nutrition?.calories ?? 0}

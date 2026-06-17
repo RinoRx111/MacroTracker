@@ -25,16 +25,39 @@ class WeightService:
         weight_date: Optional[date] = None,
         notes: Optional[str] = None,
     ) -> WeightLog:
-        """Create a new weight log entry."""
-        db_weight_log = WeightLog(
-            user_id=user_id,
-            weight_kg=weight_kg,
-            weight_date=weight_date or date.today(),
-            notes=notes,
-        )
-        db.add(db_weight_log)
-        db.commit()
-        db.refresh(db_weight_log)
+        """Create or update a weight log entry."""
+        target_date = weight_date or date.today()
+        
+        # Check if log already exists for this user on this date
+        db_weight_log = db.query(WeightLog).filter(
+            WeightLog.user_id == user_id,
+            WeightLog.weight_date == target_date,
+        ).first()
+        
+        if db_weight_log:
+            db_weight_log.weight_kg = weight_kg
+            if notes is not None:
+                db_weight_log.notes = notes
+            db.commit()
+            db.refresh(db_weight_log)
+        else:
+            db_weight_log = WeightLog(
+                user_id=user_id,
+                weight_kg=weight_kg,
+                weight_date=target_date,
+                notes=notes,
+            )
+            db.add(db_weight_log)
+            db.commit()
+            db.refresh(db_weight_log)
+            
+        # If logging for today, also update the main user profile weight!
+        if target_date == date.today():
+            user = db.query(User).filter(User.id == user_id).first()
+            if user:
+                user.weight_kg = weight_kg
+                db.commit()
+                
         return db_weight_log
 
     @staticmethod
