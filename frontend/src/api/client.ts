@@ -1,12 +1,5 @@
-// frontend/src/api/client.ts
-import axios from 'axios';
+import apiClient from './sharedClient';
 
-const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 export const api = {
 
