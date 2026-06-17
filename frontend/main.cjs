@@ -95,15 +95,29 @@ function startBackend() {
 
 // Check if uvicorn server is responsive
 function checkBackendReady(callback) {
+  let finished = false;
   const req = http.get(`${APP_URL}/health`, (res) => {
+    if (finished) return;
     if (res.statusCode === 200) {
+      finished = true;
       callback();
     } else {
+      finished = true;
       setTimeout(() => checkBackendReady(callback), 200);
     }
   });
 
+  // Set a timeout of 1000ms to prevent request hanging indefinitely
+  req.setTimeout(1000, () => {
+    if (finished) return;
+    finished = true;
+    req.destroy();
+    setTimeout(() => checkBackendReady(callback), 200);
+  });
+
   req.on('error', () => {
+    if (finished) return;
+    finished = true;
     setTimeout(() => checkBackendReady(callback), 200);
   });
 }
@@ -120,7 +134,9 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
     },
-    icon: path.join(__dirname, 'dist', 'favicon.ico'),
+    icon: fs.existsSync(path.join(__dirname, 'dist', 'favicon.ico'))
+      ? path.join(__dirname, 'dist', 'favicon.ico')
+      : undefined,
   });
 
   // Hide the standard menu bar for chromeless application container look
