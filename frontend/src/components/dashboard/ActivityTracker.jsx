@@ -27,14 +27,24 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const parsedSteps = parseInt(steps) || 0;
+      const parsedDistance = parseFloat(distance) || 0.0;
+      const parsedActiveMins = parseInt(activeMins) || 0;
+      const parsedCalories = parseFloat(calories) || 0.0;
+
       const today = new Date().toISOString().split('T')[0];
       await activityApi.updateActivityLog({
-        steps: parseInt(steps) || 0,
-        distance_km: parseFloat(distance) || 0.0,
-        active_minutes: parseInt(activeMins) || 0,
-        calories_burned: parseFloat(calories) || 0.0,
+        steps: parsedSteps,
+        distance_km: parsedDistance,
+        active_minutes: parsedActiveMins,
+        calories_burned: parsedCalories,
         logged_date: today,
       });
+
+      setSteps(parsedSteps);
+      setDistance(parsedDistance);
+      setActiveMins(parsedActiveMins);
+      setCalories(parsedCalories);
       setIsEditing(false);
       if (onUpdate) onUpdate();
     } catch (error) {
@@ -44,7 +54,7 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
     }
   };
 
-  const stepPercentage = Math.min(Math.round((steps / goal) * 100), 100);
+  const stepPercentage = Math.min(Math.round((Number(steps || 0) / goal) * 100), 100);
 
   return (
     <Card>
@@ -78,7 +88,7 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
               />
               <div className="text-center mt-2">
                 <span className="text-xl font-extrabold text-gray-900 dark:text-white block">
-                  {steps.toLocaleString()}
+                  {Number(steps || 0).toLocaleString()}
                 </span>
                 <span className="text-xxs uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   of {goal.toLocaleString()} steps
@@ -92,21 +102,21 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
             <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-700/50">
               <span className="text-2xl block">📍</span>
               <span className="text-lg font-bold text-gray-900 dark:text-white block mt-1">
-                {distance.toFixed(2)}
+                {Number(distance || 0).toFixed(2)}
               </span>
               <span className="text-xxs text-gray-500 uppercase">Distance (km)</span>
             </div>
             <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-700/50">
               <span className="text-2xl block">⏱️</span>
               <span className="text-lg font-bold text-gray-900 dark:text-white block mt-1">
-                {activeMins}
+                {Number(activeMins || 0)}
               </span>
               <span className="text-xxs text-gray-500 uppercase">Active Mins</span>
             </div>
             <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-700/50">
               <span className="text-2xl block">🔥</span>
               <span className="text-lg font-bold text-gray-900 dark:text-white block mt-1">
-                {Math.round(calories)}
+                {Math.round(Number(calories || 0))}
               </span>
               <span className="text-xxs text-gray-500 uppercase">Kcal Burned</span>
             </div>
