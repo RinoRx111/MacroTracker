@@ -21,16 +21,7 @@ from app.models.user import User
 
 router = APIRouter(prefix="/food", tags=["food"])
 
-# Mock authentication - in production use proper JWT
-def get_current_user(user_id: int = 1, db: Session = Depends(get_db)) -> User:
-    """Get current user (simplified for demo)."""
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-        )
-    return user
+from app.core.auth import get_current_user
 
 
 @router.post("/logs", response_model=FoodLogResponse)

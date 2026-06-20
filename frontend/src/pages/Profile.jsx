@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import { Card, CardHeader, CardBody } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useProfile } from '../hooks/useProfile';
 import { Loader } from '../components/ui/Loader';
 
-export const Profile = ({ user }) => {
+export const Profile = ({ user: mockUser }) => {
   const { profile, stats, loading, updateProfile } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+
+  const isClerkEnabled = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+  const { user } = isClerkEnabled ? useUser() : { user: null };
+  const { signOut } = isClerkEnabled ? useClerk() : { signOut: () => {} };
+
 
   useEffect(() => {
     if (profile) {
@@ -33,6 +39,35 @@ export const Profile = ({ user }) => {
 
   return (
     <div className="space-y-6 pb-20 md:pb-6 max-w-2xl">
+      {isClerkEnabled && user && (
+        <Card>
+          <CardHeader title="Account Settings (Clerk) 🔒" subtitle="Your secure authentication profile" />
+          <CardBody>
+            <div className="flex flex-col md:flex-row items-center gap-6 pb-2">
+              <img 
+                src={user.imageUrl} 
+                alt="Avatar" 
+                className="w-16 h-16 rounded-full border-2 border-emerald-500 shadow-sm object-cover" 
+              />
+              <div className="space-y-1 text-center md:text-left flex-1">
+                <h4 className="text-lg font-bold text-gray-900 dark:text-white">{user.fullName || "User"}</h4>
+                <p className="text-sm text-gray-500">{user.primaryEmailAddress?.emailAddress}</p>
+                <div className="pt-2 text-xs text-gray-400 space-y-1">
+                  <p><span className="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Clerk ID:</span> <code className="bg-gray-150 dark:bg-gray-800 px-1 py-0.5 rounded text-gray-700 dark:text-gray-300">{user.id}</code></p>
+                  <p><span className="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Created:</span> {new Date(user.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
+                </div>
+              </div>
+              <Button 
+                variant="secondary" 
+                onClick={() => signOut()}
+                className="text-xs px-2.5 py-1.5 border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400"
+              >
+                Sign Out 🚪
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+      )}
       <Card>
         <CardHeader title={profile.full_name || profile.username} subtitle={profile.email} />
         <CardBody>

@@ -16,6 +16,12 @@ const clearCache = () => {
   cache = {};
 };
 
+let clerkTokenResolver = null;
+
+export const setClerkTokenResolver = (resolver) => {
+  clerkTokenResolver = resolver;
+};
+
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -23,8 +29,19 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor to serve from cache
-apiClient.interceptors.request.use((config) => {
+// Request interceptor to serve from cache and inject auth token
+apiClient.interceptors.request.use(async (config) => {
+  if (clerkTokenResolver) {
+    try {
+      const token = await clerkTokenResolver();
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+    } catch (e) {
+      console.error('Error resolving Clerk auth token:', e);
+    }
+  }
+
   if (config.method?.toLowerCase() === 'get') {
     const cacheKey = getCacheKey(config);
     const cachedEntry = cache[cacheKey];

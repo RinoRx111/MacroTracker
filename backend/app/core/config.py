@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     
     # API
     API_V1_STR: str = "/api/v1"
+
+    # Clerk Authentication
+    CLERK_ISSUER: Optional[str] = os.getenv("CLERK_ISSUER")
+    CLERK_JWKS_URL: Optional[str] = os.getenv("CLERK_JWKS_URL")
     
     # CORS
     CORS_ORIGINS: list = [

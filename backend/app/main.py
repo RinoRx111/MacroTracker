@@ -23,6 +23,7 @@ def migrate_db_schema(db: Session):
             ("daily_step_goal", "INTEGER DEFAULT 10000"),
             ("daily_water_goal_ml", "INTEGER DEFAULT 2000"),
             ("daily_calories_burned_goal", "INTEGER DEFAULT 500"),
+            ("clerk_id", "VARCHAR(255)"),
         ]
         for col_name, col_type in columns_to_add:
             try:
@@ -31,6 +32,14 @@ def migrate_db_schema(db: Session):
                 print(f"Added column {col_name} to users table.")
             except Exception:
                 db.rollback()
+
+        # Create unique index for clerk_id separately as SQLite doesn't support UNIQUE in ALTER TABLE ADD COLUMN
+        try:
+            db.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS uq_users_clerk_id ON users (clerk_id)"))
+            db.commit()
+            print("Ensured unique index on users.clerk_id.")
+        except Exception:
+            db.rollback()
     except Exception as e:
         print(f"Migration error: {e}")
 

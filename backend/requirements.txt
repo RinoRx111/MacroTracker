@@ -8,3 +8,5 @@ pydantic[email]==2.5.3
 python-dotenv==1.0.0
 httpx==0.26.0
 alembic==1.12.1
+PyJWT==2.8.0
+cryptography==42.0.5

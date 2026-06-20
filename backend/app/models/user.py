@@ -16,6 +16,8 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     full_name = Column(String(200), nullable=True)
     hashed_password = Column(String(255), nullable=False)
+    clerk_id = Column(String(255), unique=True, index=True, nullable=True)
+
     
     # Profile information
     age = Column(Integer, nullable=True)

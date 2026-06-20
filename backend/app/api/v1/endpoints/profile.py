@@ -18,30 +18,36 @@ from app.services.weight_service import WeightService
 router = APIRouter(prefix="/profile", tags=["profile"])
 
 
-def get_current_user(user_id: int = 1, db: Session = Depends(get_db)) -> User:
-    """Get current user (simplified for demo)."""
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-        )
+from app.core.auth import get_current_user
+from pydantic import BaseModel
+
+class UserSyncRequest(BaseModel):
+    email: str
+    full_name: str
+
+@router.post("/sync", response_model=UserResponse)
+async def sync_profile(
+    sync_data: UserSyncRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> UserResponse:
+    """Sync authenticated User metadata from Clerk."""
+    if sync_data.email:
+        user.email = sync_data.email
+    if sync_data.full_name:
+        user.full_name = sync_data.full_name
+    db.commit()
+    db.refresh(user)
     return user
 
 
 @router.get("/me", response_model=UserResponse)
 async def get_profile(
-    db: Session = Depends(get_db),
-    user_id: int = 1,
+    user: User = Depends(get_current_user),
 ) -> UserResponse:
     """Get current user profile."""
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-        )
     return user
+
 
 
 @router.put("/me", response_model=UserResponse)
