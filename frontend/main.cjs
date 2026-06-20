@@ -68,15 +68,26 @@ function startBackend() {
 
   console.log(`Starting backend from: ${backendPath}`);
 
+  // Configure persistent database path inside user AppData directory to avoid data loss on portable app exit
+  const dbPath = path.join(app.getPath('userData'), 'nutrition_tracker.db').replace(/\\/g, '/');
+  const env = {
+    ...process.env,
+    DATABASE_URL: `sqlite:///${dbPath}`
+  };
+
+  console.log(`Configuring persistent DB at: ${dbPath}`);
+
   if (useExe) {
     backendProcess = spawn(backendPath, [], {
       cwd: path.dirname(backendPath),
+      env: env,
     });
   } else {
     const pythonCmd = getPythonPath();
     console.log(`Using Python executable: ${pythonCmd}`);
     backendProcess = spawn(pythonCmd, [backendPath], {
       cwd: path.dirname(backendPath),
+      env: env,
     });
   }
 
