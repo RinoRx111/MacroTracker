@@ -50,11 +50,18 @@
     ],
     "win": {
       "target": [
-        "portable"
+        "nsis"
       ],
       "signtoolOptions": {
         "sign": "./sign.cjs"
       }
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MacroTracker"
     }
   }
 }
