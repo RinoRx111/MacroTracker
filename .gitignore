@@ -52,3 +52,4 @@ frontend/sign.js
 frontend/sign.cjs
 frontend/.turbo/
 frontend/node_modules/
+.vercel
