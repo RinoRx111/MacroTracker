@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download MacroTracker</title>
+  <meta name="description" content="Download the latest version of MacroTracker, a clean and professional desktop application for nutrition and macro tracking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card fade-in">
+    <div class="header">
+      <span class="logo-emoji">🥗</span>
+      <h1 class="app-title">MacroTracker</h1>
+      <p class="description">A clean, professional desktop application for seamless nutrition and macro tracking.</p>
+    </div>
+
+    <div class="download-section">
+      <a href="#" id="download-btn" class="btn">
+        <span class="btn-text">Download for Windows</span>
+        <span class="btn-subtext" id="btn-version">Detecting latest version...</span>
+      </a>
+      
+      <p class="os-not-supported" id="os-notice" style="display: none;">
+        It looks like you're on a non-Windows platform. Currently, MacroTracker only supports Windows. macOS and Linux versions are coming soon!
+      </p>
+
+      <div class="alternative-downloads">
+        <p class="section-title">Available Downloads</p>
+        <ul class="download-list">
+          <li class="download-item active">
+            <span class="platform-icon">🪟</span>
+            <span class="platform-name">Windows (.exe)</span>
+            <a href="#" id="win-download-link" class="platform-link">Download</a>
+          </li>
+          <li class="download-item disabled">
+            <span class="platform-icon">🍎</span>
+            <span class="platform-name">macOS (.dmg)</span>
+            <span class="platform-status">Coming Soon</span>
+          </li>
+          <li class="download-item disabled">
+            <span class="platform-icon">🐧</span>
+            <span class="platform-name">Linux (.AppImage)</span>
+            <span class="platform-status">Coming Soon</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer fade-in">
+    <p>MacroTracker is open-source. Hosted on <a href="https://github.com/RinoRx111/MacroTracker" target="_blank" rel="noopener">GitHub</a>.</p>
+  </footer>
+
+  <script>
+    const OWNER = 'RinoRx111';
+    const REPO = 'MacroTracker';
+    const GITHUB_API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/releases/latest`;
+    
+    // Default fallback installer page if API check fails or rate-limited
+    let downloadUrl = `https://github.com/RinoRx111/MacroTracker/releases`;
+
+    async function fetchLatestRelease() {
+      const btnVersion = document.getElementById('btn-version');
+      const downloadBtn = document.getElementById('download-btn');
+      const winDownloadLink = document.getElementById('win-download-link');
+
+      try {
+        const response = await fetch(GITHUB_API_URL);
+        if (!response.ok) throw new Error('API fetch failed');
+        const data = await response.json();
+        
+        if (data && data.tag_name && data.assets) {
+          const version = data.tag_name;
+          btnVersion.textContent = `Version ${version}`;
+          
+          // Find Windows installer matching: "MacroTracker Setup {version}.exe"
+          const winAsset = data.assets.find(asset => 
+            asset.name.toLowerCase().startsWith('macrotracker setup') && 
+            asset.name.toLowerCase().endsWith('.exe')
+          );
+
+          if (winAsset) {
+            downloadUrl = winAsset.browser_download_url;
+          } else {
+            // Fallback to release page url
+            downloadUrl = data.html_url;
+          }
+        } else {
+          btnVersion.textContent = 'Get Latest Release';
+        }
+      } catch (err) {
+        console.error('Error fetching release details:', err);
+        btnVersion.textContent = 'Get Latest Release';
+      }
+
+      downloadBtn.href = downloadUrl;
+      winDownloadLink.href = downloadUrl;
+    }
+
+    // Detect Client OS
+    function detectOS() {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      const isWindows = userAgent.includes('win');
+      const osNotice = document.getElementById('os-notice');
+      
+      if (!isWindows) {
+        osNotice.style.display = 'block';
+      }
+    }
+
+    // Initialize
+    detectOS();
+    fetchLatestRelease();
+  </script>
+</body>
+</html>

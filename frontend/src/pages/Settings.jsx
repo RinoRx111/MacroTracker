@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useProfile } from '../hooks/useProfile';
+import { isNewerVersion } from '../utils/version';
+import pkg from '../../package.json';
 
 export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
   const { updateProfile, calculateMacros } = useProfile();
@@ -18,6 +20,44 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
     daily_calories_burned_goal: profile?.daily_calories_burned_goal || 500,
   });
   const [saved, setSaved] = useState(false);
+
+  const CURRENT_VERSION = pkg.version || '1.0.0';
+  const [updateStatus, setUpdateStatus] = useState('checking'); // 'checking' | 'up-to-date' | 'available'
+  const [latestVersion, setLatestVersion] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    const checkForUpdates = async () => {
+      try {
+        const response = await fetch('https://api.github.com/repos/RinoRx111/MacroTracker/releases/latest');
+        if (!response.ok) {
+          throw new Error('Failed to fetch latest release');
+        }
+        const data = await response.json();
+        if (!active) return;
+        if (data && data.tag_name) {
+          const remoteVer = data.tag_name;
+          setLatestVersion(remoteVer);
+          if (isNewerVersion(CURRENT_VERSION, remoteVer)) {
+            setUpdateStatus('available');
+          } else {
+            setUpdateStatus('up-to-date');
+          }
+        } else {
+          setUpdateStatus('up-to-date');
+        }
+      } catch (err) {
+        console.error('Error checking for updates:', err);
+        if (active) {
+          setUpdateStatus('up-to-date'); // Graceful fallback
+        }
+      }
+    };
+    checkForUpdates();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleSave = async () => {
     await updateProfile(settings);
@@ -183,9 +223,49 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
         <CardHeader title="About" />
         <CardBody>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            MacroTracker v1.0.0 | Professional nutrition and macro tracking application
+            MacroTracker v{CURRENT_VERSION} | Professional nutrition and macro tracking application
           </p>
           <p className="text-xs text-gray-500 mt-2">Built with FastAPI + React</p>
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardHeader title="App Update" />
+        <CardBody>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="font-medium text-gray-900 dark:text-white">Check for Updates</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                {updateStatus === 'checking' && 'Checking for updates...'}
+                {updateStatus === 'up-to-date' && "You're up to date!"}
+                {updateStatus === 'available' && `A new version (v${latestVersion.replace(/^[vV]/, '')}) is available.`}
+              </p>
+            </div>
+            <div className="flex items-center">
+              {updateStatus === 'available' && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={async () => {
+                    const url = 'https://macrotracker.vercel.app';
+                    if (window.electronAPI && typeof window.electronAPI.openExternal === 'function') {
+                      await window.electronAPI.openExternal(url);
+                    } else {
+                      window.open(url, '_blank');
+                    }
+                  }}
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-sm"
+                >
+                  Update Now
+                </Button>
+              )}
+              {updateStatus === 'up-to-date' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-800">
+                  ✓ Up to date
+                </span>
+              )}
+            </div>
+          </div>
         </CardBody>
       </Card>
 

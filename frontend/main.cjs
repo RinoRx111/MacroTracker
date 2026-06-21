@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const http = require('http');
@@ -133,6 +133,17 @@ function checkBackendReady(callback) {
   });
 }
 
+// Handle open-external link requests from React frontend safely
+ipcMain.handle('open-external', async (event, url) => {
+  try {
+    await shell.openExternal(url);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to open external link:', err);
+    return { success: false, error: err.message };
+  }
+});
+
 function createWindow() {
   const state = restoreWindowState();
 
@@ -144,6 +155,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.cjs'),
     },
     icon: fs.existsSync(path.join(__dirname, 'dist', 'favicon.ico'))
       ? path.join(__dirname, 'dist', 'favicon.ico')
