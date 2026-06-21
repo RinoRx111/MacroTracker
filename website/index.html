@@ -70,6 +70,13 @@
 
       try {
         const response = await fetch(GITHUB_API_URL);
+        if (response.status === 404) {
+          btnVersion.textContent = 'No release published on GitHub yet';
+          downloadUrl = `https://github.com/RinoRx111/MacroTracker/releases`;
+          downloadBtn.href = downloadUrl;
+          winDownloadLink.href = downloadUrl;
+          return;
+        }
         if (!response.ok) throw new Error('API fetch failed');
         const data = await response.json();
         
