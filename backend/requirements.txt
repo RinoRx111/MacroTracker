@@ -10,3 +10,5 @@ httpx==0.26.0
 alembic==1.12.1
 PyJWT==2.8.0
 cryptography==42.0.5
+psycopg2-binary==2.9.9
+
