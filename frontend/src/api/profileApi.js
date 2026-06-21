@@ -6,7 +6,7 @@ export const profileApi = {
   updateProfile: (data) => apiClient.put('/profile/me', data),
   getUserStats: () => apiClient.get('/profile/stats'),
   updateSettings: (data) => apiClient.put('/profile/settings', data),
-  calculateMacros: () => apiClient.post('/profile/calculate-macros'),
+  calculateMacros: (goalType) => apiClient.post(`/profile/calculate-macros${goalType ? `?goal_type=${goalType}` : ''}`),
 };
 
 export default apiClient;

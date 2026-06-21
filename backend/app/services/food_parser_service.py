@@ -36,6 +36,17 @@ COMMON_FOODS = {
     "oats": {"calories_per_100g": 389.0, "protein_per_100g": 16.9, "carbs_per_100g": 66.3, "fat_per_100g": 6.9, "unit_weight": 1.0},
     "peanut butter": {"calories_per_100g": 588.0, "protein_per_100g": 25.0, "carbs_per_100g": 20.0, "fat_per_100g": 50.0, "unit_weight": 16.0},
     "almonds": {"calories_per_100g": 579.0, "protein_per_100g": 21.0, "carbs_per_100g": 22.0, "fat_per_100g": 49.0, "unit_weight": 1.2},
+    "mustard oil": {"calories_per_100g": 884.0, "protein_per_100g": 0.0, "carbs_per_100g": 0.0, "fat_per_100g": 100.0, "unit_weight": 1.0},
+    "olive oil": {"calories_per_100g": 884.0, "protein_per_100g": 0.0, "carbs_per_100g": 0.0, "fat_per_100g": 100.0, "unit_weight": 1.0},
+    "coconut oil": {"calories_per_100g": 884.0, "protein_per_100g": 0.0, "carbs_per_100g": 0.0, "fat_per_100g": 100.0, "unit_weight": 1.0},
+    "oil": {"calories_per_100g": 884.0, "protein_per_100g": 0.0, "carbs_per_100g": 0.0, "fat_per_100g": 100.0, "unit_weight": 1.0},
+    "butter": {"calories_per_100g": 717.0, "protein_per_100g": 0.8, "carbs_per_100g": 0.1, "fat_per_100g": 81.0, "unit_weight": 1.0},
+    "ghee": {"calories_per_100g": 900.0, "protein_per_100g": 0.0, "carbs_per_100g": 0.0, "fat_per_100g": 100.0, "unit_weight": 1.0},
+    "tomato": {"calories_per_100g": 18.0, "protein_per_100g": 0.9, "carbs_per_100g": 3.9, "fat_per_100g": 0.2, "unit_weight": 80.0},
+    "onion": {"calories_per_100g": 40.0, "protein_per_100g": 1.1, "carbs_per_100g": 9.3, "fat_per_100g": 0.1, "unit_weight": 100.0},
+    "garlic": {"calories_per_100g": 149.0, "protein_per_100g": 6.4, "carbs_per_100g": 33.1, "fat_per_100g": 0.5, "unit_weight": 5.0},
+    "ginger": {"calories_per_100g": 80.0, "protein_per_100g": 1.8, "carbs_per_100g": 17.8, "fat_per_100g": 0.8, "unit_weight": 10.0},
+    "potato": {"calories_per_100g": 77.0, "protein_per_100g": 2.0, "carbs_per_100g": 17.0, "fat_per_100g": 0.1, "unit_weight": 150.0},
 }
 
 class FoodParserService:
@@ -117,13 +128,16 @@ class FoodParserService:
                     
                     # Try to find a match in COMMON_FOODS to get exact macros
                     matched_info = None
-                    for common_name, info in COMMON_FOODS.items():
-                        if common_name in name or name in common_name:
-                            matched_info = info
-                            break
+                    if name in COMMON_FOODS:
+                        matched_info = COMMON_FOODS[name]
+                    else:
+                        for common_name, info in COMMON_FOODS.items():
+                            if common_name in name:
+                                matched_info = info
+                                break
                             
+                    ratio = portions / 100.0
                     if matched_info:
-                        ratio = portions / 100.0
                         scaled_items.append({
                             "food_name": item.get("food_name").capitalize(),
                             "portion_size": portions,
@@ -145,8 +159,23 @@ class FoodParserService:
                         except Exception as off_err:
                             print(f"[WARNING] Open Food Facts search fallback failed: {off_err}")
 
-                        ratio = portions / 100.0
+                        # Check if Open Food Facts has calorie data, and validate against LLM estimate
+                        llm_calories = float(item.get("calories_per_100g", 0.0))
+                        use_off = False
+                        
                         if off_info and off_info.get("calories_per_100g") is not None:
+                            try:
+                                off_calories = float(off_info.get("calories_per_100g"))
+                                # Compute difference relative to LLM estimate (default to 1.0 to avoid division by zero)
+                                diff = abs(off_calories - llm_calories) / max(llm_calories, 1.0)
+                                if diff <= 0.5:
+                                    use_off = True
+                                else:
+                                    print(f"[INFO] Rejected Open Food Facts match for '{item.get('food_name')}' due to calorie discrepancy: OFF={off_calories} kcal vs LLM={llm_calories} kcal (diff={diff:.1%})")
+                            except Exception as parse_err:
+                                print(f"[WARNING] Failed to parse and compare calories: {parse_err}")
+
+                        if use_off:
                             scaled_items.append({
                                 "food_name": item.get("food_name").capitalize(),
                                 "portion_size": portions,
@@ -162,7 +191,7 @@ class FoodParserService:
                                 "food_name": item.get("food_name").capitalize(),
                                 "portion_size": portions,
                                 "portion_unit": "g",
-                                "calories_kcal": round(float(item.get("calories_per_100g", 0.0)) * ratio, 1),
+                                "calories_kcal": round(llm_calories * ratio, 1),
                                 "protein_g": round(float(item.get("protein_per_100g", 0.0)) * ratio, 1),
                                 "carbs_g": round(float(item.get("carbs_per_100g", 0.0)) * ratio, 1),
                                 "fat_g": round(float(item.get("fat_per_100g", 0.0)) * ratio, 1),
@@ -256,7 +285,7 @@ class FoodParserService:
 if __name__ == "__main__":
     import asyncio
     
-    test_text = "134gm chicken brest, 4 boiled eggs, 3 whole wheat chapati each of 50gm"
-    print("Testing offline local parser fallback:")
-    results = FoodParserService._parse_locally(test_text)
+    test_text = "500 gm chicken breast, 20 gm mustard oil, 80 gm tomato, 100 gm onion, 25 gm ginger, 25 gm garlic"
+    print("Testing parser (local / LLM if key exists):")
+    results = asyncio.run(FoodParserService.parse_text(test_text))
     print(json.dumps(results, indent=2))

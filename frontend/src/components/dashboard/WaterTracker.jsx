@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { waterApi } from '../../api/waterApi';
+import { formatDateLocal } from '../../utils/formatters';
 
 export const WaterTracker = ({ initialAmount = 0, goal = 2000, onUpdate }) => {
   const [amount, setAmount] = useState(initialAmount);
@@ -16,7 +17,7 @@ export const WaterTracker = ({ initialAmount = 0, goal = 2000, onUpdate }) => {
     setAmount(newAmount);
     setLoading(true);
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = formatDateLocal();
       await waterApi.updateWaterLog({ amount_ml: newAmount, logged_date: today });
       if (onUpdate) onUpdate();
     } catch (error) {

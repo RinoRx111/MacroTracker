@@ -12,6 +12,37 @@ from app.models import Base
 from app.models.user import User
 from app.api.v1.api import api_router
 
+import logging
+import os
+
+# Set up file logging in AppData/macro-tracker-frontend/backend.log
+try:
+    appdata_path = os.getenv("APPDATA")
+    if appdata_path:
+        log_dir = os.path.join(appdata_path, "macro-tracker-frontend")
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = os.path.join(log_dir, "backend.log")
+        
+        # Configure file handler
+        file_handler = logging.FileHandler(log_file, encoding='utf-8')
+        file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+        
+        # Add to root and specific loggers
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.INFO)
+        root_logger.addHandler(file_handler)
+        
+        loggers_to_patch = ["uvicorn", "uvicorn.access", "uvicorn.error", "auth", "fastapi"]
+        for logger_name in loggers_to_patch:
+            l = logging.getLogger(logger_name)
+            l.addHandler(file_handler)
+            l.setLevel(logging.INFO)
+            l.propagate = True
+            
+        print(f"Logging initialized at: {log_file}")
+except Exception as e:
+    print(f"Failed to initialize file logging: {e}")
+
 # Create tables
 Base.metadata.create_all(bind=engine)
 

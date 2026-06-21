@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Loader } from '../components/ui/Loader';
 import { workoutApi } from '../api/workoutApi';
 import { useProfile } from '../hooks/useProfile';
+import { formatDateLocal } from '../utils/formatters';
 
 // MET values for standard exercises
 const MET_VALUES = {
@@ -31,7 +32,7 @@ export const WorkoutTracker = () => {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(formatDateLocal());
 
   // Form State
   const [exerciseType, setExerciseType] = useState('running');

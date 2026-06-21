@@ -1,7 +1,7 @@
 """Profile and user management endpoints."""
 
 from datetime import date, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -154,8 +154,11 @@ async def update_settings(
     return user
 
 
+from typing import Optional
+
 @router.post("/calculate-macros")
 async def calculate_macros(
+    goal_type: Optional[str] = Query(None),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -169,10 +172,11 @@ async def calculate_macros(
     bmr = calculate_bmr(user.weight_kg, user.height_cm, user.age, user.gender)
     tdee = calculate_tdee(bmr, user.activity_level)
 
-    # Get active goal
-    from app.services.weight_service import GoalService
-    goal = GoalService.get_active_goal(db, user.id)
-    goal_type = goal.goal_type if goal else "maintenance"
+    if not goal_type:
+        # Get active goal
+        from app.services.weight_service import GoalService
+        goal = GoalService.get_active_goal(db, user.id)
+        goal_type = goal.goal_type if goal else "maintenance"
 
     macros = estimate_daily_macros_for_goal(tdee, goal_type, user.weight_kg)
 

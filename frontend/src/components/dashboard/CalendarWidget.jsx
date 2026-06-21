@@ -3,6 +3,7 @@ import { Card, CardHeader, CardBody } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { analyticsApi } from '../../api/analyticsApi';
 import { weightApi } from '../../api/weightApi';
+import { formatDateLocal } from '../../utils/formatters';
 
 export const CalendarWidget = ({ user, onWeightLogged }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -25,8 +26,8 @@ export const CalendarWidget = ({ user, onWeightLogged }) => {
     setLoading(true);
     try {
       // Get start and end of the month
-      const startDateStr = new Date(year, month, 1).toISOString().split('T')[0];
-      const endDateStr = new Date(year, month + 1, 0).toISOString().split('T')[0];
+      const startDateStr = formatDateLocal(new Date(year, month, 1));
+      const endDateStr = formatDateLocal(new Date(year, month + 1, 0));
 
       const [nutritionRes, weightRes] = await Promise.all([
         analyticsApi.getNutritionData(startDateStr, endDateStr),
@@ -126,7 +127,7 @@ export const CalendarWidget = ({ user, onWeightLogged }) => {
   const handleDayClick = (day) => {
     if (!day) return;
     const dateObj = new Date(year, month, day);
-    const dateStr = dateObj.toISOString().split('T')[0];
+    const dateStr = formatDateLocal(dateObj);
     
     const dayNutrition = nutritionData[dateStr] || {
       calories: 0,
@@ -196,7 +197,7 @@ export const CalendarWidget = ({ user, onWeightLogged }) => {
                 }
 
                 const dateObj = new Date(year, month, day);
-                const dateStr = dateObj.toISOString().split('T')[0];
+                const dateStr = formatDateLocal(dateObj);
                 const hasNutrition = nutritionData[dateStr]?.calories > 0;
                 const calories = nutritionData[dateStr]?.calories || 0;
                 const weight = weightData[dateStr] || null;

@@ -3,6 +3,7 @@ import { Card, CardHeader, CardBody } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { CircularProgress } from '../ui/ProgressBar';
 import { activityApi } from '../../api/activityApi';
+import { formatDateLocal } from '../../utils/formatters';
 
 export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -32,7 +33,7 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
       const parsedActiveMins = parseInt(activeMins) || 0;
       const parsedCalories = parseFloat(calories) || 0.0;
 
-      const today = new Date().toISOString().split('T')[0];
+      const today = formatDateLocal();
       await activityApi.updateActivityLog({
         steps: parsedSteps,
         distance_km: parsedDistance,

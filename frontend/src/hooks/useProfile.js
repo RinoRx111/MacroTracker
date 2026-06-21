@@ -38,9 +38,9 @@ export const useProfile = () => {
     }
   };
 
-  const calculateMacros = async (weight, height, age, gender, activityLevel, goal) => {
+  const calculateMacros = async (goal) => {
     try {
-      const response = await profileApi.calculateMacros(weight, height, age, gender, activityLevel, goal);
+      const response = await profileApi.calculateMacros(goal);
       return response.data;
     } catch (err) {
       setError(err.message);

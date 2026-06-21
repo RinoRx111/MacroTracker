@@ -4,7 +4,9 @@ import { Button } from '../components/ui/Button';
 import { useProfile } from '../hooks/useProfile';
 
 export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
-  const { updateProfile } = useProfile();
+  const { updateProfile, calculateMacros } = useProfile();
+  const [selectedGoal, setSelectedGoal] = useState('maintenance');
+  const [calculating, setCalculating] = useState(false);
   const [settings, setSettings] = useState({
     dark_mode: darkMode,
     daily_calorie_goal: profile?.daily_calorie_goal || 2000,
@@ -22,6 +24,26 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
     setDarkMode(settings.dark_mode);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleAutoCalculate = async () => {
+    setCalculating(true);
+    try {
+      const data = await calculateMacros(selectedGoal);
+      if (data) {
+        setSettings({
+          ...settings,
+          daily_calorie_goal: Math.round(data.recommended_daily_calories),
+          protein_goal_g: Math.round(data.recommended_protein_g * 10) / 10,
+          carbs_goal_g: Math.round(data.recommended_carbs_g * 10) / 10,
+          fat_goal_g: Math.round(data.recommended_fat_g * 10) / 10,
+        });
+      }
+    } catch (e) {
+      console.error("Error auto-calculating macros:", e);
+    } finally {
+      setCalculating(false);
+    }
   };
 
   return (
@@ -47,6 +69,30 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
       <Card>
         <CardHeader title="Nutrition Goals" />
         <CardBody>
+          {/* Auto calculate controls */}
+          <div className="mb-6 p-4 rounded-xl border border-gray-150 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-800/30 flex flex-col sm:flex-row items-end gap-4">
+            <div className="flex-1 w-full">
+              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">Weight Goal</label>
+              <select
+                value={selectedGoal}
+                onChange={(e) => setSelectedGoal(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              >
+                <option value="weight_loss">Weight Loss (Deficit) 📉</option>
+                <option value="maintenance">Maintenance (Balance) ⚖️</option>
+                <option value="muscle_gain">Muscle Gain (Surplus) 📈</option>
+              </select>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={handleAutoCalculate}
+              disabled={calculating}
+              className="w-full sm:w-auto text-sm px-4 py-2 border border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/20 text-purple-600 dark:text-purple-400 font-bold"
+            >
+              {calculating ? 'Calculating...' : '🪄 Auto-Calculate Recommended Targets'}
+            </Button>
+          </div>
+
           <div className="space-y-4">
             {[
               { label: 'Daily Calorie Goal', key: 'daily_calorie_goal', step: '1', parse: parseInt },
@@ -66,6 +112,37 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
               </div>
             ))}
           </div>
+
+          {/* Calorie math balance checks */}
+          {(() => {
+            const proteinKcal = (settings.protein_goal_g || 0) * 4;
+            const carbsKcal = (settings.carbs_goal_g || 0) * 4;
+            const fatKcal = (settings.fat_goal_g || 0) * 9;
+            const totalMacroKcal = Math.round(proteinKcal + carbsKcal + fatKcal);
+            const calorieGoal = settings.daily_calorie_goal || 0;
+            const matchesCalorieGoal = Math.abs(totalMacroKcal - calorieGoal) <= 5; // allow small rounding differences
+
+            return (
+              <div className="mt-6 p-4 rounded-xl border bg-gray-50/50 dark:bg-gray-800/50 border-gray-150 dark:border-gray-700">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Macro Calorie Sum:</span>
+                  <span className={`font-bold ${matchesCalorieGoal ? 'text-emerald-500' : 'text-amber-500'}`}>
+                    {totalMacroKcal} kcal
+                  </span>
+                </div>
+                {!matchesCalorieGoal && (
+                  <p className="text-xs text-amber-500 mt-2">
+                    ⚠️ The sum of macros ({totalMacroKcal} kcal) does not match your Calorie Goal ({calorieGoal} kcal). Adjust your macros to match, or use the "Auto-Calculate" button above.
+                  </p>
+                )}
+                {matchesCalorieGoal && (
+                  <p className="text-xs text-emerald-500 mt-2">
+                    ✓ Macros perfectly match your Calorie Goal!
+                  </p>
+                )}
+              </div>
+            );
+          })()}
         </CardBody>
       </Card>
 

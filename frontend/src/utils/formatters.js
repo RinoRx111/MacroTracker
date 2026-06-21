@@ -51,12 +51,20 @@ export const calculateMacroPercentages = (protein, carbs, fat) => {
   };
 };
 
+export const formatDateLocal = (date) => {
+  const d = date ? new Date(date) : new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const getDateRange = (days) => {
   const range = [];
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    range.push(date.toISOString().split('T')[0]);
+    range.push(formatDateLocal(date));
   }
   return range;
 };

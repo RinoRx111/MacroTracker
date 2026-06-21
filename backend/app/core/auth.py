@@ -131,10 +131,25 @@ def get_current_user(
     Decodes the Clerk JWT token, extracts the clerk_id, and matches it.
     If no user exists, dynamically initializes a User profile.
     """
-    if not credentials:
+    # Demo/Bypass mode: Fallback to the demo user if credentials are missing and Clerk is not configured,
+    # or if we are in debug mode and a 'demo_token' is explicitly supplied.
+    clerk_jwks_url = settings.CLERK_JWKS_URL or os.getenv("CLERK_JWKS_URL")
+    is_demo_mode = False
+    
+    if not clerk_jwks_url:
+        is_demo_mode = True
+    elif credentials and credentials.credentials == "demo_token" and settings.DEBUG:
+        is_demo_mode = True
+    elif not credentials and settings.DEBUG:
+        is_demo_mode = True
+        
+    if is_demo_mode:
+        demo_user = db.query(User).filter(User.id == 1).first()
+        if demo_user:
+            return demo_user
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authorization credentials missing."
+            detail="Demo user not found and authorization credentials missing."
         )
         
     payload = verify_clerk_token(credentials.credentials)

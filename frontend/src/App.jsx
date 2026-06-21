@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth, useUser, SignIn } from '@clerk/clerk-react';
+import { useAuth, useUser, SignIn } from '@clerk/react';
 import { Sidebar, Navbar, MobileNav } from './components/layout/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { FoodDiary } from './pages/FoodDiary';
@@ -12,12 +12,13 @@ import { useProfile } from './hooks/useProfile';
 import { analyticsApi } from './api/analyticsApi';
 import { getDarkMode, setDarkMode as saveDarkMode } from './store/appStore';
 import { setClerkTokenResolver, apiClient } from './api/sharedClient';
+import { formatDateLocal } from './utils/formatters';
 
 function App() {
   const [activeLink, setActiveLink] = useState('dashboard');
   const [darkMode, setDarkMode] = useState(getDarkMode());
   const { foods, loading: foodLoading, fetchDailyLogs } = useFood();
-  const { profile, loading: profileLoading } = useProfile();
+  const { profile, loading: profileLoading, reload: reloadProfile } = useProfile();
   const [dailySummary, setDailySummary] = useState(null);
 
   const isClerkEnabled = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -59,6 +60,7 @@ function App() {
 
   useEffect(() => {
     if (!isClerkEnabled || isSignedIn) {
+      reloadProfile();
       fetchDailyLogs();
       loadDailySummary();
     }
@@ -66,7 +68,7 @@ function App() {
 
   const loadDailySummary = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = formatDateLocal();
       const response = await analyticsApi.getSummary(today);
       setDailySummary(response.data);
     } catch (error) {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { foodApi } from '../api/foodApi';
+import { formatDateLocal } from '../utils/formatters';
 
 export const useFood = () => {
   const [foods, setFoods] = useState([]);
@@ -9,7 +10,7 @@ export const useFood = () => {
   const fetchDailyLogs = async (date = new Date()) => {
     setLoading(true);
     try {
-      const dateStr = (date instanceof Date ? date : new Date(date)).toISOString().split('T')[0];
+      const dateStr = formatDateLocal(date);
       const response = await foodApi.getDailyLogs(dateStr);
       setFoods(response.data);
       setError(null);
@@ -24,7 +25,7 @@ export const useFood = () => {
   const fetchDailySummary = async (date = new Date()) => {
     setLoading(true);
     try {
-      const dateStr = (date instanceof Date ? date : new Date(date)).toISOString().split('T')[0];
+      const dateStr = formatDateLocal(date);
       const response = await foodApi.getDailySummary(dateStr);
       return response.data;
     } catch (err) {
