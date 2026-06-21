@@ -104,12 +104,35 @@ function App() {
             <h2 className="text-2xl font-bold text-center text-gray-950 dark:text-white mb-6">
               Welcome to MacroTracker 🥗
             </h2>
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full">
               <SignIn routing="hash" appearance={{
                 variables: {
                   colorPrimary: '#10b981',
                   colorBackground: darkMode ? '#1f2937' : '#ffffff',
                   colorText: darkMode ? '#ffffff' : '#111827',
+                  colorTextSecondary: darkMode ? '#9ca3af' : '#4b5563',
+                  colorInputBackground: darkMode ? '#374151' : '#ffffff',
+                  colorInputText: darkMode ? '#ffffff' : '#111827',
+                  colorBorder: darkMode ? '#4b5563' : '#e5e7eb',
+                },
+                elements: {
+                  card: 'bg-transparent shadow-none border-none p-0 w-full',
+                  headerTitle: darkMode ? 'text-white' : 'text-gray-900',
+                  headerSubtitle: darkMode ? 'text-gray-400' : 'text-gray-600',
+                  formFieldLabel: darkMode ? 'text-gray-300' : 'text-gray-700',
+                  formFieldInput: darkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-emerald-500 focus:ring-emerald-500' 
+                    : 'bg-white border-gray-300 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500',
+                  footerActionText: darkMode ? 'text-gray-400' : 'text-gray-600',
+                  footerActionLink: 'text-emerald-500 hover:text-emerald-600',
+                  identityPreviewText: darkMode ? 'text-white' : 'text-gray-900',
+                  identityPreviewEditButtonIcon: 'text-emerald-500',
+                  dividerText: darkMode ? 'text-gray-400' : 'text-gray-600',
+                  dividerLine: darkMode ? 'bg-gray-600' : 'bg-gray-200',
+                  socialButtonsBlockButton: darkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600' 
+                    : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50',
+                  socialButtonsBlockButtonText: darkMode ? 'text-white font-medium' : 'text-gray-900 font-medium',
                 }
               }} />
             </div>

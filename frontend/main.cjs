@@ -165,8 +165,10 @@ function createWindow() {
   // Hide the standard menu bar for chromeless application container look
   mainWindow.setMenuBarVisibility(false);
 
-  // Open Developer Tools to pipe console errors to log output
-  mainWindow.webContents.openDevTools();
+  // Open Developer Tools in development mode
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // Load backend app URL
   mainWindow.loadURL(APP_URL);
