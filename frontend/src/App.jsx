@@ -18,7 +18,7 @@ function App() {
   const [activeLink, setActiveLink] = useState('dashboard');
   const [darkMode, setDarkMode] = useState(getDarkMode());
   const { foods, loading: foodLoading, fetchDailyLogs } = useFood();
-  const { profile, loading: profileLoading, reload: reloadProfile } = useProfile();
+  const { profile, loading: profileLoading, error: profileError, reload: reloadProfile } = useProfile();
   const [dailySummary, setDailySummary] = useState(null);
 
   const isClerkEnabled = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -80,7 +80,17 @@ function App() {
   const renderPage = () => {
     switch (activeLink) {
       case 'dashboard':
-        return <Dashboard user={profile} profile={profile} loading={profileLoading} dailySummary={dailySummary} reloadSummary={loadDailySummary} />;
+        return (
+          <Dashboard 
+            user={profile} 
+            profile={profile} 
+            loading={profileLoading} 
+            error={profileError} 
+            dailySummary={dailySummary} 
+            reloadSummary={loadDailySummary} 
+            reloadProfile={reloadProfile} 
+          />
+        );
       case 'diary':
         return <FoodDiary user={profile} onFoodChange={loadDailySummary} />;
       case 'workouts':

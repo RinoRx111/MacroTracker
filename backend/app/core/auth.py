@@ -151,7 +151,12 @@ def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Demo user not found and authorization credentials missing."
         )
-        
+    if not credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authorization credentials are required."
+        )
+
     payload = verify_clerk_token(credentials.credentials)
     clerk_id = payload.get("sub")
     if not clerk_id:

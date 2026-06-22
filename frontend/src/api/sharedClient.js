@@ -1,6 +1,20 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const getApiBaseUrl = () => {
+  try {
+    // If the frontend is loaded on localhost or 127.0.0.1 (whether in development
+    // or running within the packaged Electron container), always connect to the local backend.
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://127.0.0.1:8000/api/v1';
+    }
+  } catch (e) {
+    console.error('Error resolving dynamic API URL:', e);
+  }
+  
+  return import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 let cache = {};
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes

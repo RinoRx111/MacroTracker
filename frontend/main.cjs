@@ -170,8 +170,8 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
-  // Load backend app URL
-  mainWindow.loadURL(APP_URL);
+  // Load backend app URL with packaged status
+  mainWindow.loadURL(`${APP_URL}?packaged=${app.isPackaged}`);
 
   mainWindow.on('close', () => {
     saveWindowState(mainWindow);

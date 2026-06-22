@@ -10,7 +10,7 @@ import { CircularProgress } from '../components/ui/ProgressBar';
 import { Button } from '../components/ui/Button';
 import { CalendarWidget } from '../components/dashboard/CalendarWidget';
 
-export const Dashboard = ({ user, profile, loading, dailySummary, reloadSummary }) => {
+export const Dashboard = ({ user, profile, loading, error, dailySummary, reloadSummary, reloadProfile }) => {
   const [showCalendar, setShowCalendar] = React.useState(false);
 
   React.useEffect(() => {
@@ -18,6 +18,18 @@ export const Dashboard = ({ user, profile, loading, dailySummary, reloadSummary 
       reloadSummary();
     }
   }, []);
+
+  if (error) {
+    return (
+      <div className="text-center py-12 space-y-4">
+        <p className="text-red-500 font-semibold">Failed to load profile details</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{error}</p>
+        <Button variant="secondary" onClick={() => { reloadProfile?.(); reloadSummary?.(); }}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   if (loading) {
     return <Loader fullPage />;

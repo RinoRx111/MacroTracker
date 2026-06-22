@@ -6,7 +6,7 @@ import { useProfile } from '../hooks/useProfile';
 import { Loader } from '../components/ui/Loader';
 
 export const Profile = ({ user: mockUser }) => {
-  const { profile, stats, loading, updateProfile } = useProfile();
+  const { profile, stats, loading, error, updateProfile, reload } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
 
@@ -32,6 +32,18 @@ export const Profile = ({ user: mockUser }) => {
     await updateProfile(formData);
     setIsEditing(false);
   };
+
+  if (error) {
+    return (
+      <div className="text-center py-12 space-y-4">
+        <p className="text-red-500 font-semibold">Failed to load profile details</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{error}</p>
+        <Button variant="secondary" onClick={reload}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   if (loading || !profile) {
     return <Loader fullPage />;

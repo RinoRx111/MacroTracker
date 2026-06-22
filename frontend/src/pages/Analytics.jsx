@@ -14,6 +14,7 @@ export const Analytics = ({ user }) => {
   const [waterData, setWaterData] = useState([]);
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadAnalytics();
@@ -21,6 +22,7 @@ export const Analytics = ({ user }) => {
 
   const loadAnalytics = async () => {
     setLoading(true);
+    setError(null);
     try {
       const days = 7;
       const today = new Date();
@@ -46,13 +48,25 @@ export const Analytics = ({ user }) => {
         ),
       ]);
 
+      const failures = [];
+      if (nutritionResult.status === 'rejected') failures.push(`Nutrition: ${nutritionResult.reason?.message || 'Failed'}`);
+      if (weightResult.status === 'rejected') failures.push(`Weight: ${weightResult.reason?.message || 'Failed'}`);
+      if (stepsResult.status === 'rejected') failures.push(`Insights: ${insightResult.reason?.message || 'Failed'}`);
+      if (stepsResult.status === 'rejected') failures.push(`Steps: ${stepsResult.reason?.message || 'Failed'}`);
+      if (waterResult.status === 'rejected') failures.push(`Water: ${waterResult.reason?.message || 'Failed'}`);
+
+      if (failures.length > 0) {
+        setError(`Failed to load some analytics data: ${failures.join(', ')}`);
+      }
+
       if (nutritionResult.status === 'fulfilled') setCalorieData(nutritionResult.value.data || []);
       if (weightResult.status === 'fulfilled') setWeightData(weightResult.value.data || []);
       if (insightResult.status === 'fulfilled') setInsights(insightResult.value.data);
       if (stepsResult.status === 'fulfilled') setStepsData(stepsResult.value.data || []);
       if (waterResult.status === 'fulfilled') setWaterData(waterResult.value.data || []);
-    } catch (error) {
-      console.error('Error loading analytics:', error);
+    } catch (err) {
+      console.error('Error loading analytics:', err);
+      setError(err.message || 'An unexpected error occurred loading analytics.');
     } finally {
       setLoading(false);
     }
@@ -64,6 +78,20 @@ export const Analytics = ({ user }) => {
 
   return (
     <div className="space-y-6 pb-20 md:pb-6">
+      {error && (
+        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 p-4 rounded-xl flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-red-800 dark:text-red-400">Unable to load complete analytics history</p>
+            <p className="text-xs text-red-650 dark:text-red-400/80">{error}</p>
+          </div>
+          <button 
+            onClick={loadAnalytics} 
+            className="text-xs px-3 py-1.5 bg-red-100 hover:bg-red-200 dark:bg-red-900/40 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold rounded-lg transition-all"
+          >
+            Retry 🔄
+          </button>
+        </div>
+      )}
       {insights && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
