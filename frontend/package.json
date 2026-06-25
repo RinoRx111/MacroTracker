@@ -56,10 +56,7 @@
     "win": {
       "target": [
         "appx"
-      ],
-      "signtoolOptions": {
-        "sign": "./sign.cjs"
-      }
+      ]
     },
     "appx": {
       "publisher": "CN=MacroTrackerDevelopment",

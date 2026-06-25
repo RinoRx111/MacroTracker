@@ -50,6 +50,9 @@ frontend/dist/
 frontend/dist-desktop/
 frontend/sign.js
 frontend/sign.cjs
+frontend/cert.*
+.agents/
+skills-lock.json
 frontend/.turbo/
 frontend/node_modules/
 .vercel
