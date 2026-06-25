@@ -55,18 +55,16 @@
     ],
     "win": {
       "target": [
-        "nsis"
+        "appx"
       ],
       "signtoolOptions": {
         "sign": "./sign.cjs"
       }
     },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "MacroTracker"
+    "appx": {
+      "publisher": "CN=MacroTrackerDevelopment",
+      "publisherDisplayName": "MacroTracker Dev",
+      "identityName": "com.macrotracker.app"
     }
   }
 }
