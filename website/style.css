@@ -1,13 +1,17 @@
-/* Base styles and variables */
+/* Base styles and variables - Athletic Performance Restraint */
 :root {
-  --bg-color: #0b0f19;
-  --card-bg: #111827;
-  --border-color: #1f2937;
-  --text-main: #f9fafb;
-  --text-sub: #9ca3af;
-  --primary: #8b5cf6;
-  --primary-hover: #7c3aed;
-  --success: #10b981;
+  --bg-color: #0F1410;
+  --card-bg: #1A211C;
+  --border-color: #2A332C;
+  --text-main: #E8E6E0;
+  --text-sub: #8A9189;
+  --primary: #9FE870;
+  --primary-hover: #86D553;
+  --text-on-primary: #0F1410;
+  --success: #6FAE4A;
+  --warning: #FF6B5C;
+  --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -17,7 +21,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
@@ -26,7 +30,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 2rem 1.5rem;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -34,42 +38,52 @@ body {
 .card {
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: 20px;
   width: 100%;
   max-width: 440px;
-  padding: 2.5rem 2rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  padding: 3rem 2rem;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(159, 232, 112, 0.15);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
 }
 
 .logo-emoji {
-  font-size: 3rem;
+  font-size: 3.5rem;
   display: inline-block;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 10px rgba(159, 232, 112, 0.1));
+  animation: bounceSlow 3s ease-in-out infinite;
 }
 
 .app-title {
-  font-size: 1.75rem;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
   margin-bottom: 0.5rem;
+  color: var(--text-main);
 }
 
 .description {
   color: var(--text-sub);
-  font-size: 0.925rem;
+  font-size: 0.95rem;
   font-weight: 400;
+  padding: 0 0.5rem;
 }
 
 /* Download Section */
 .download-section {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .btn {
@@ -78,19 +92,19 @@ body {
   align-items: center;
   justify-content: center;
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-on-primary);
   text-decoration: none;
-  padding: 1.125rem;
-  border-radius: 10px;
+  padding: 1.25rem;
+  border-radius: 12px;
   font-weight: 600;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(159, 232, 112, 0.15);
 }
 
 .btn:hover {
   background-color: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(159, 232, 112, 0.25);
 }
 
 .btn:active {
@@ -98,37 +112,40 @@ body {
 }
 
 .btn-text {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
 }
 
 .btn-subtext {
-  font-size: 0.75rem;
-  opacity: 0.8;
-  font-weight: 400;
-  margin-top: 0.125rem;
+  font-size: 0.78rem;
+  opacity: 0.85;
+  font-weight: 500;
+  margin-top: 0.15rem;
+  letter-spacing: 0.02em;
 }
 
 .os-not-supported {
-  background-color: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
-  font-size: 0.8rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  background-color: rgba(255, 107, 92, 0.08);
+  border: 1px solid rgba(255, 107, 92, 0.2);
+  color: var(--warning);
+  font-size: 0.825rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
   text-align: center;
 }
 
 /* Alternatives List */
 .alternative-downloads {
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 
 .section-title {
-  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--text-sub);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
   font-weight: 600;
 }
 
@@ -136,58 +153,61 @@ body {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
 .download-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  background-color: rgba(255, 255, 255, 0.02);
+  padding: 0.85rem 1.15rem;
+  background-color: rgba(255, 255, 255, 0.01);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 0.875rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .download-item.active {
-  background-color: rgba(139, 92, 246, 0.03);
-  border-color: rgba(139, 92, 246, 0.2);
+  background-color: rgba(159, 232, 112, 0.02);
+  border-color: rgba(159, 232, 112, 0.15);
 }
 
 .platform-icon {
-  margin-right: 0.5rem;
-  font-size: 1.1rem;
+  margin-right: 0.65rem;
+  font-size: 1.15rem;
 }
 
 .platform-name {
   flex-grow: 1;
+  color: var(--text-main);
 }
 
 .platform-link {
   color: var(--primary);
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .platform-link:hover {
   color: var(--primary-hover);
-  text-decoration: underline;
+  text-shadow: 0 0 8px rgba(159, 232, 112, 0.2);
 }
 
 .platform-status {
   color: var(--text-sub);
-  font-size: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  font-size: 0.78rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
 }
 
 /* Footer */
 .footer {
-  margin-top: 1.5rem;
-  font-size: 0.75rem;
+  margin-top: 2rem;
+  font-size: 0.8rem;
   color: var(--text-sub);
   text-align: center;
 }
@@ -196,7 +216,7 @@ body {
   color: var(--text-main);
   text-decoration: none;
   border-bottom: 1px dotted var(--text-sub);
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .footer a:hover {
@@ -206,16 +226,26 @@ body {
 
 /* Animations */
 .fade-in {
-  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
