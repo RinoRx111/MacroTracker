@@ -1,8 +1,11 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, session } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const http = require('http');
 const fs = require('fs');
+
+// Disable HTTP cache to prevent stale UI bundle caching issues in production
+app.commandLine.appendSwitch('disable-http-cache');
 
 let mainWindow;
 let backendProcess;
@@ -170,8 +173,10 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
-  // Load backend app URL with packaged status
-  mainWindow.loadURL(`${APP_URL}?packaged=${app.isPackaged}`);
+  // Load backend app URL with packaged status, bypassing cache
+  mainWindow.webContents.session.clearCache().then(() => {
+    mainWindow.loadURL(`${APP_URL}?packaged=${app.isPackaged}`);
+  });
 
   mainWindow.on('close', () => {
     saveWindowState(mainWindow);
