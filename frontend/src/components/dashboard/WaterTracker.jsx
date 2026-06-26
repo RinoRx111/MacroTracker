@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody } from '../ui/Card';
 import { Button } from '../ui/Button';
+import { ProgressBar } from '../ui/ProgressBar';
 import { waterApi } from '../../api/waterApi';
 import { formatDateLocal } from '../../utils/formatters';
 
@@ -42,27 +43,25 @@ export const WaterTracker = ({ initialAmount = 0, goal = 2000, onUpdate }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        {/* Animated Water Cup */}
-        <div className="md:col-span-4 flex justify-center">
-          <div className="relative w-28 h-36 border-4 border-gray-300 dark:border-gray-600 rounded-b-2xl rounded-t-lg overflow-hidden flex items-end justify-center bg-gray-100 dark:bg-gray-800 shadow-inner">
-            {/* Water fill level */}
-            <div 
-              className="w-full bg-gradient-to-t from-blue-600 to-cyan-400 transition-all duration-700 ease-out"
-              style={{ height: `${percentage}%` }}
-            />
-            {/* Overlay statistics */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
-              <span className="text-lg font-extrabold text-gray-900 dark:text-white drop-shadow-md">
+        {/* Hydration Progress Bar */}
+        <div className="md:col-span-4 flex flex-col justify-center">
+          <div className="mb-2">
+            <span className="text-xxs uppercase tracking-wider text-[var(--text-secondary)] font-semibold block">Hydration Progress</span>
+            <div className="flex items-baseline gap-1 mt-1.5">
+              <span className="text-3xl font-extrabold text-[var(--text-primary)] stat-number">
                 {amount}
               </span>
-              <span className="text-xxs text-gray-600 dark:text-gray-300 drop-shadow-md font-semibold">
+              <span className="text-xs text-[var(--text-secondary)]">
                 / {goal} ml
-              </span>
-              <span className="text-xs font-bold text-blue-700 dark:text-blue-300 mt-1 drop-shadow-md">
-                {percentage}%
               </span>
             </div>
           </div>
+          <ProgressBar 
+            value={amount} 
+            max={goal} 
+            color="bg-[var(--hydration-accent)]"
+            showLabel={false}
+          />
         </div>
 
         {/* Dynamic Controls */}

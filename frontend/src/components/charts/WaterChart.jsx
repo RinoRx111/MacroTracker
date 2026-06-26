@@ -7,7 +7,7 @@ export const WaterChart = ({ data, goal = 2000 }) => {
     return (
       <Card>
         <CardHeader title="Water Intake Trends" subtitle="Last 7 days" />
-        <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="h-64 flex items-center justify-center text-[var(--text-secondary)] font-medium">
           No data available
         </div>
       </Card>
@@ -25,14 +25,36 @@ export const WaterChart = ({ data, goal = 2000 }) => {
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }} />
-            <ReferenceLine y={goal} stroke="#3b82f6" strokeDasharray="3 3" label={{ value: 'Goal', position: 'top', fill: '#3b82f6', fontSize: 10 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-main)" />
+            <XAxis 
+              dataKey="date" 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-body)' }}
+              stroke="var(--border-main)"
+            />
+            <YAxis 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-body)' }}
+              stroke="var(--border-main)"
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: 'var(--bg-card)', 
+                borderColor: 'var(--border-main)', 
+                borderRadius: '8px', 
+                color: 'var(--text-primary)', 
+                fontFamily: 'var(--font-body)' 
+              }} 
+              itemStyle={{ color: 'var(--text-primary)' }}
+              labelStyle={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}
+            />
+            <ReferenceLine 
+              y={goal} 
+              stroke="var(--hydration-accent)" 
+              strokeDasharray="3 3" 
+              label={{ value: 'Goal', position: 'top', fill: 'var(--hydration-accent)', fontSize: 10, fontFamily: 'var(--font-body)' }} 
+            />
             <Bar 
               dataKey="water" 
-              fill="#60a5fa" 
+              fill="var(--hydration-accent)" 
               radius={[4, 4, 0, 0]}
               name="Water (ml)"
             />

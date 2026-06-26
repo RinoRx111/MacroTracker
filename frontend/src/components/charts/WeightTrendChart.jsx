@@ -7,7 +7,7 @@ export const WeightTrendChart = ({ data }) => {
     return (
       <Card>
         <CardHeader title="Weight Trend" subtitle="Track your progress" />
-        <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="h-64 flex items-center justify-center text-[var(--text-secondary)] font-medium">
           No weight data available
         </div>
       </Card>
@@ -25,19 +25,34 @@ export const WeightTrendChart = ({ data }) => {
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="date" />
-            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-main)" />
+            <XAxis 
+              dataKey="date" 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-body)' }}
+              stroke="var(--border-main)"
+            />
+            <YAxis 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-body)' }}
+              stroke="var(--border-main)"
+            />
             <Tooltip 
-              contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+              contentStyle={{ 
+                backgroundColor: 'var(--bg-card)', 
+                borderColor: 'var(--border-main)', 
+                borderRadius: '8px', 
+                color: 'var(--text-primary)', 
+                fontFamily: 'var(--font-body)' 
+              }} 
+              itemStyle={{ color: 'var(--text-primary)' }}
+              labelStyle={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}
               formatter={(value) => `${value} kg`}
             />
             <Line 
               type="monotone" 
               dataKey="weight" 
-              stroke="#10b981" 
+              stroke="var(--accent-primary)" 
               strokeWidth={2}
-              dot={{ fill: '#10b981' }}
+              dot={{ fill: 'var(--accent-primary)' }}
             />
           </LineChart>
         </ResponsiveContainer>

@@ -15,13 +15,13 @@ export const GOAL_TYPES = [
 ];
 
 export const COLORS = {
-  protein: '#FF6B6B',
-  carbs: '#4ECDC4',
-  fat: '#FFE66D',
-  primary: '#6C5CE7',
-  success: '#00B894',
-  warning: '#FDCB6E',
-  danger: '#E17055',
+  protein: 'var(--warning-state)',
+  carbs: 'var(--accent-primary)',
+  fat: 'var(--text-secondary)',
+  primary: 'var(--accent-primary)',
+  success: 'var(--accent-primary)',
+  warning: 'var(--warning-state)',
+  danger: 'var(--warning-state)',
 };
 
 export const MACRO_TARGETS = {

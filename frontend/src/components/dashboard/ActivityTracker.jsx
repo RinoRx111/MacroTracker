@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { CircularProgress } from '../ui/ProgressBar';
+import { ProgressBar } from '../ui/ProgressBar';
 import { activityApi } from '../../api/activityApi';
 import { formatDateLocal } from '../../utils/formatters';
 
@@ -78,24 +78,25 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
 
       {!isEditing ? (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-          {/* Circular Step Progress */}
-          <div className="md:col-span-5 flex justify-center">
-            <div className="relative">
-              <CircularProgress 
-                value={steps} 
-                max={goal} 
-                color="text-emerald-500" 
-                size="md" 
-              />
-              <div className="text-center mt-2">
-                <span className="text-xl font-extrabold text-gray-900 dark:text-white block">
+          {/* Steps Horizontal Progress */}
+          <div className="md:col-span-5 flex flex-col justify-center">
+            <div className="mb-2">
+              <span className="text-xxs uppercase tracking-wider text-[var(--text-secondary)] font-semibold block">Steps Progress</span>
+              <div className="flex items-baseline gap-1 mt-1.5">
+                <span className="text-3xl font-extrabold text-[var(--text-primary)] stat-number">
                   {Number(steps || 0).toLocaleString()}
                 </span>
-                <span className="text-xxs uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  of {goal.toLocaleString()} steps
+                <span className="text-xs text-[var(--text-secondary)]">
+                  / {goal.toLocaleString()} steps
                 </span>
               </div>
             </div>
+            <ProgressBar 
+              value={steps} 
+              max={goal} 
+              color="bg-[var(--accent-primary)]"
+              showLabel={false}
+            />
           </div>
 
           {/* Stats Breakdown */}
@@ -177,7 +178,7 @@ export const ActivityTracker = ({ activity, goal = 10000, onUpdate }) => {
               type="submit"
               variant="primary"
               size="sm"
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500"
+              className="flex-1"
               disabled={loading}
             >
               {loading ? 'Saving...' : 'Save Activity 💾'}

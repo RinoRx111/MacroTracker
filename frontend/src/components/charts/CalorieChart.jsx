@@ -7,7 +7,7 @@ export const CalorieChart = ({ data }) => {
     return (
       <Card>
         <CardHeader title="Calorie Trends" subtitle="Last 7 days" />
-        <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="h-64 flex items-center justify-center text-[var(--text-secondary)] font-medium">
           No data available
         </div>
       </Card>
@@ -26,25 +26,42 @@ export const CalorieChart = ({ data }) => {
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-main)" />
+            <XAxis 
+              dataKey="date" 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-body)' }}
+              stroke="var(--border-main)"
+            />
+            <YAxis 
+              tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-body)' }}
+              stroke="var(--border-main)"
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: 'var(--bg-card)', 
+                borderColor: 'var(--border-main)', 
+                borderRadius: '8px', 
+                color: 'var(--text-primary)', 
+                fontFamily: 'var(--font-body)' 
+              }} 
+              itemStyle={{ color: 'var(--text-primary)' }}
+              labelStyle={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}
+            />
             <Line 
               type="monotone" 
               name="Consumed (kcal)"
               dataKey="calories" 
-              stroke="#a78bfa" 
+              stroke="var(--accent-primary)" 
               strokeWidth={2}
-              dot={{ fill: '#a78bfa' }}
+              dot={{ fill: 'var(--accent-primary)' }}
             />
             <Line 
               type="monotone" 
               name="Burned (kcal)"
               dataKey="burned" 
-              stroke="#f43f5e" 
+              stroke="var(--warning-state)" 
               strokeWidth={2}
-              dot={{ fill: '#f43f5e' }}
+              dot={{ fill: 'var(--warning-state)' }}
             />
           </LineChart>
         </ResponsiveContainer>

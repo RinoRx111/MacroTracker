@@ -98,7 +98,7 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
             </div>
             <button
               onClick={() => setSettings({ ...settings, dark_mode: !settings.dark_mode })}
-              className={`w-14 h-8 rounded-full transition-all ${settings.dark_mode ? 'bg-purple-600' : 'bg-gray-300'}`}
+              className={`w-14 h-8 rounded-full transition-all ${settings.dark_mode ? 'bg-[var(--accent-primary)]' : 'bg-[var(--border-main)]'}`}
             >
               <div className={`w-6 h-6 rounded-full bg-white transition-all ${settings.dark_mode ? 'ml-7' : 'ml-1'}`} />
             </button>
@@ -127,7 +127,7 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
               variant="secondary"
               onClick={handleAutoCalculate}
               disabled={calculating}
-              className="w-full sm:w-auto text-sm px-4 py-2 border border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/20 text-purple-600 dark:text-purple-400 font-bold"
+              className="w-full sm:w-auto text-sm px-4 py-2 border border-[var(--accent-primary)] hover:bg-[rgba(var(--accent-primary-rgb),0.1)] text-[var(--accent-primary)] font-bold"
             >
               {calculating ? 'Calculating...' : '🪄 Auto-Calculate Recommended Targets'}
             </Button>
@@ -254,7 +254,7 @@ export const Settings = ({ profile, setDarkMode, darkMode, onLogout }) => {
                       window.open(url, '_blank');
                     }
                   }}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-sm"
+                  className="font-semibold shadow-sm"
                 >
                   Update Now
                 </Button>

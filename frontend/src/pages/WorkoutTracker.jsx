@@ -277,15 +277,19 @@ export const WorkoutTracker = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-2 gap-4">
-            <Card className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
-              <p className="text-sm font-medium opacity-90">Total Duration</p>
-              <h3 className="text-3xl font-extrabold mt-1">{totalDuration} mins</h3>
-              <p className="text-xs opacity-75 mt-2">Active workout time today</p>
+            <Card className="p-4 flex flex-col justify-between h-full">
+              <div>
+                <p className="text-xs md:text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Total Duration</p>
+                <h3 className="text-3xl font-extrabold mt-1 text-[var(--text-primary)] stat-number">{totalDuration} <span className="text-sm font-medium text-[var(--text-secondary)] uppercase">mins</span></h3>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] mt-2">Active workout time today</p>
             </Card>
-            <Card className="bg-gradient-to-br from-pink-500 to-rose-600 text-white">
-              <p className="text-sm font-medium opacity-90">Total Calories Burned</p>
-              <h3 className="text-3xl font-extrabold mt-1">{totalBurned} kcal</h3>
-              <p className="text-xs opacity-75 mt-2">Active energy expenditure</p>
+            <Card className="p-4 flex flex-col justify-between h-full">
+              <div>
+                <p className="text-xs md:text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Total Burned</p>
+                <h3 className="text-3xl font-extrabold mt-1 text-[var(--text-primary)] stat-number">{totalBurned} <span className="text-sm font-medium text-[var(--text-secondary)] uppercase">kcal</span></h3>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] mt-2">Active energy expenditure</p>
             </Card>
           </div>
 

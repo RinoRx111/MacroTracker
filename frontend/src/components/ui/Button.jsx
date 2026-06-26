@@ -10,10 +10,10 @@ export const Button = ({
   const baseStyles = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
   
   const variants = {
-    primary: 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-white',
+    primary: 'bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-on-accent)] focus:ring-[var(--accent-primary)] font-semibold shadow-sm',
+    secondary: 'bg-transparent border border-[var(--border-main)] hover:bg-[var(--bg-card-tint)] text-[var(--text-primary)] focus:ring-[var(--accent-primary)]',
+    danger: 'bg-[var(--warning-state)] hover:opacity-90 text-[var(--text-on-accent)] focus:ring-[var(--warning-state)] font-semibold',
+    ghost: 'bg-transparent hover:bg-[var(--bg-card-tint)] text-[var(--text-primary)] focus:ring-[var(--accent-primary)]',
   };
 
   const sizes = {

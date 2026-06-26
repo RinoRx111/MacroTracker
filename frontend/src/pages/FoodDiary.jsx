@@ -98,9 +98,11 @@ export const FoodDiary = ({ user, onFoodChange }) => {
 
   return (
     <div className="space-y-6 pb-20 md:pb-6">
-      <Card className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
-        <h2 className="text-3xl font-bold mb-2">{Math.round(totalCalories)}</h2>
-        <p className="opacity-90">Calories Logged Today</p>
+      <Card className="p-6">
+        <p className="text-xs md:text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Calories Logged Today</p>
+        <h2 className="text-5xl font-extrabold text-[var(--text-primary)] mt-1.5 display-number">
+          {Math.round(totalCalories)} <span className="text-xl font-medium text-[var(--text-secondary)] uppercase tracking-wide">kcal</span>
+        </h2>
       </Card>
 
       {/* AI Quick Log Card */}
@@ -156,7 +158,7 @@ export const FoodDiary = ({ user, onFoodChange }) => {
               ))}
             </div>
 
-            <Button variant="primary" onClick={handleLogBatch} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all" disabled={parsing}>
+            <Button variant="primary" onClick={handleLogBatch} className="w-full font-bold py-3 rounded-xl transition-all" disabled={parsing}>
               Log all {parsedPreview.length} items to Diary
             </Button>
           </div>

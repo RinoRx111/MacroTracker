@@ -11,9 +11,9 @@ export const Sidebar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) =>
   ];
 
   return (
-    <div className="hidden md:flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen sticky top-0">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+    <div className="hidden md:flex flex-col w-64 bg-[var(--bg-card)] border-r border-[var(--border-main)] h-screen sticky top-0">
+      <div className="p-6 border-b border-[var(--border-main)]">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
           MacroTracker
         </h1>
       </div>
@@ -23,10 +23,10 @@ export const Sidebar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) =>
           <button
             key={link.href}
             onClick={() => setActiveLink(link.href)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all mb-2 ${
+            className={`w-full flex items-center gap-3 px-4 py-3 transition-all mb-2 border-l-4 rounded-r-lg ${
               activeLink === link.href
-                ? 'bg-purple-600 text-white'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'border-[var(--accent-primary)] bg-[var(--bg-card-tint)] text-[var(--text-primary)] font-semibold'
+                : 'border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-card-tint)] hover:text-[var(--text-primary)]'
             }`}
           >
             <span className="text-xl">{link.icon}</span>
@@ -35,10 +35,10 @@ export const Sidebar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) =>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-t border-[var(--border-main)]">
         <button
           onClick={() => setDarkMode(!darkMode)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[var(--bg-card-tint)] hover:bg-[var(--border-main)] text-[var(--text-primary)] transition"
         >
           <span>{darkMode ? '☀️' : '🌙'}</span>
           <span className="text-sm font-medium">{darkMode ? 'Light' : 'Dark'}</span>
@@ -52,21 +52,21 @@ export const Navbar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) => 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="md:hidden sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div className="md:hidden sticky top-0 z-40 bg-[var(--bg-card)] border-b border-[var(--border-main)]">
       <div className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h1 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
           MacroTracker
         </h1>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-2xl"
+          className="text-2xl text-[var(--text-primary)]"
         >
           ☰
         </button>
       </div>
 
       {mobileMenuOpen && (
-        <div className="border-t border-gray-200 dark:border-gray-700">
+        <div className="border-t border-[var(--border-main)]">
           <nav className="flex flex-col p-4">
             {[
               { label: 'Dashboard', icon: '📊', href: 'dashboard' },
@@ -82,10 +82,10 @@ export const Navbar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) => 
                   setActiveLink(link.href);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all mb-2 ${
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-all mb-2 border-l-4 rounded-r-lg ${
                   activeLink === link.href
-                    ? 'bg-purple-600 text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'border-[var(--accent-primary)] bg-[var(--bg-card-tint)] text-[var(--text-primary)] font-semibold'
+                    : 'border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-card-tint)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 <span className="text-xl">{link.icon}</span>
@@ -101,7 +101,7 @@ export const Navbar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) => 
 
 export const MobileNav = ({ activeLink, setActiveLink }) => {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--bg-card)] border-t border-[var(--border-main)] z-40">
       <div className="flex justify-around">
         {[
           { label: '📊', href: 'dashboard' },
@@ -114,10 +114,10 @@ export const MobileNav = ({ activeLink, setActiveLink }) => {
           <button
             key={link.href}
             onClick={() => setActiveLink(link.href)}
-            className={`flex-1 py-3 text-center transition-all ${
+            className={`flex-1 py-3 text-center transition-all border-t-2 ${
               activeLink === link.href
-                ? 'bg-purple-600 text-white'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'border-[var(--accent-primary)] bg-[var(--bg-card-tint)] text-[var(--text-primary)] font-semibold'
+                : 'border-transparent text-[var(--text-secondary)]'
             }`}
           >
             <span className="text-2xl">{link.label}</span>

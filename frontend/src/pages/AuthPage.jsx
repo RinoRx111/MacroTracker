@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { authApi, storeAuth } from '../api/authApi';
 
-const INPUT = "w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition";
+const INPUT = "w-full px-4 py-3 rounded-xl bg-[var(--bg-card-tint)] border border-[var(--border-main)] text-[var(--text-primary)] placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)] transition";
 
 export const AuthPage = ({ onAuth }) => {
   const [mode, setMode] = useState('login'); // 'login' | 'register'
@@ -42,31 +42,31 @@ export const AuthPage = ({ onAuth }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-pink-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[var(--bg-app)] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4 shadow-lg shadow-purple-500/30">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--bg-card-tint)] border border-[var(--border-main)] mb-4">
             <span className="text-3xl">🥗</span>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">
             MacroTracker
           </h1>
-          <p className="text-gray-400 mt-1 text-sm">Professional nutrition tracking</p>
+          <p className="text-[var(--text-secondary)] mt-1.5 text-sm">Professional nutrition tracking</p>
         </div>
 
         {/* Card */}
-        <div className="bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-2xl shadow-black/40 p-8 border border-gray-700/50">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-3xl p-8 shadow-sm">
           {/* Tabs */}
-          <div className="flex bg-gray-900/50 rounded-xl p-1 mb-6">
+          <div className="flex bg-[var(--bg-card-tint)] rounded-xl p-1 mb-6 border border-[var(--border-main)]">
             {['login', 'register'].map((m) => (
               <button
                 key={m}
                 onClick={() => { setMode(m); setError(''); }}
                 className={`flex-1 py-2.5 rounded-lg text-sm font-semibold capitalize transition-all ${
                   mode === m
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'text-gray-400 hover:text-gray-200'
+                    ? 'bg-[var(--accent-primary)] text-[var(--text-on-accent)]'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {m === 'login' ? 'Sign In' : 'Create Account'}
@@ -77,7 +77,7 @@ export const AuthPage = ({ onAuth }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">Full Name</label>
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Full Name</label>
                 <input
                   type="text"
                   placeholder="John Doe"
@@ -89,7 +89,7 @@ export const AuthPage = ({ onAuth }) => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Username</label>
+              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Username</label>
               <input
                 type="text"
                 placeholder="johndoe"
@@ -103,7 +103,7 @@ export const AuthPage = ({ onAuth }) => {
 
             {mode === 'register' && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+                <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Email</label>
                 <input
                   type="email"
                   placeholder="john@example.com"
@@ -116,7 +116,7 @@ export const AuthPage = ({ onAuth }) => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">Password</label>
               <input
                 type="password"
                 placeholder={mode === 'register' ? 'Min. 8 characters' : 'Your password'}
@@ -129,16 +129,16 @@ export const AuthPage = ({ onAuth }) => {
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
-                <span className="text-red-400 text-sm mt-0.5">⚠</span>
-                <p className="text-red-400 text-sm">{error}</p>
+              <div className="flex items-start gap-2 bg-[rgba(255,107,92,0.1)] border border-[var(--warning-state)] rounded-xl px-4 py-3">
+                <span className="text-[var(--warning-state)] text-sm mt-0.5">⚠</span>
+                <p className="text-[var(--warning-state)] text-sm">{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-500/25 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+              className="w-full py-3.5 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-[var(--text-on-accent)] font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed mt-2"
             >
               {loading
                 ? (mode === 'login' ? 'Signing in…' : 'Creating account…')
@@ -146,18 +146,18 @@ export const AuthPage = ({ onAuth }) => {
             </button>
           </form>
 
-          <p className="text-center text-gray-500 text-xs mt-6">
+          <p className="text-center text-[var(--text-secondary)] text-xs mt-6">
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <button
               onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}
-              className="text-purple-400 hover:text-purple-300 font-medium"
+              className="text-[var(--accent-primary)] hover:underline font-semibold"
             >
               {mode === 'login' ? 'Create one' : 'Sign in'}
             </button>
           </p>
         </div>
 
-        <p className="text-center text-gray-600 text-xs mt-6">
+        <p className="text-center text-[var(--text-secondary)] text-xs mt-6">
           Your first account becomes the active profile
         </p>
       </div>

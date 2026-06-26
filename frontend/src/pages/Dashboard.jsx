@@ -6,7 +6,7 @@ import { MacroPieChart } from '../components/charts/MacroPieChart';
 import { Loader } from '../components/ui/Loader';
 import { WaterTracker } from '../components/dashboard/WaterTracker';
 import { ActivityTracker } from '../components/dashboard/ActivityTracker';
-import { CircularProgress } from '../components/ui/ProgressBar';
+import { ProgressBar } from '../components/ui/ProgressBar';
 import { Button } from '../components/ui/Button';
 import { CalendarWidget } from '../components/dashboard/CalendarWidget';
 
@@ -49,7 +49,7 @@ export const Dashboard = ({ user, profile, loading, error, dailySummary, reloadS
         <Button 
           variant="secondary" 
           onClick={() => setShowCalendar(!showCalendar)}
-          className="flex items-center gap-2 border border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/10 hover:bg-purple-100 dark:hover:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-bold px-4 py-2 rounded-xl transition-all"
+          className="flex items-center gap-2 border border-[var(--border-main)] hover:bg-[var(--bg-card-tint)] text-[var(--text-primary)] font-bold px-4 py-2 rounded-xl transition-all"
         >
           <span>{showCalendar ? '📅 Hide Calendar History' : '📅 Show Calendar History'}</span>
         </Button>
@@ -76,34 +76,33 @@ export const Dashboard = ({ user, profile, loading, error, dailySummary, reloadS
             macro="Protein"
             value={dailySummary.nutrition?.protein_g ?? 0}
             goal={dailySummary.goals?.protein_g ?? profile.protein_goal_g}
-            color="text-red-600"
           />
           <MacroCard
             macro="Carbs"
             value={dailySummary.nutrition?.carbs_g ?? 0}
             goal={dailySummary.goals?.carbs_g ?? profile.carbs_goal_g}
-            color="text-cyan-600"
           />
           <MacroCard
             macro="Fat"
             value={dailySummary.nutrition?.fat_g ?? 0}
             goal={dailySummary.goals?.fat_g ?? profile.fat_goal_g}
-            color="text-yellow-600"
           />
-          <Card className="flex items-center justify-between p-4">
-            <div className="flex-1">
-              <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Active Burn</h4>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{Math.round(dailySummary.workout?.calories_burned || 0)} kcal</p>
-              <p className="text-xs text-gray-500 dark:text-gray-500">Goal: {dailySummary.goals?.calories_burned || 500} kcal</p>
+          <Card className="p-4 flex flex-col justify-between h-full">
+            <div className="mb-3">
+              <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Active Burn</h4>
+              <div className="flex items-baseline gap-1 mt-2">
+                <span className="text-3xl font-extrabold text-[var(--text-primary)] stat-number">
+                  {Math.round(dailySummary.workout?.calories_burned || 0)}
+                </span>
+                <span className="text-xs text-[var(--text-secondary)]">/ {dailySummary.goals?.calories_burned || 500} kcal</span>
+              </div>
             </div>
-            <div className="ml-4">
-              <CircularProgress 
-                value={dailySummary.workout?.calories_burned || 0} 
-                max={dailySummary.goals?.calories_burned || 500} 
-                color="text-rose-500"
-                size="sm"
-              />
-            </div>
+            <ProgressBar 
+              value={dailySummary.workout?.calories_burned || 0} 
+              max={dailySummary.goals?.calories_burned || 500} 
+              color="bg-[var(--accent-primary)]"
+              showLabel={false}
+            />
           </Card>
         </div>
       )}

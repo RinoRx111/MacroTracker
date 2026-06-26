@@ -1,55 +1,80 @@
 import React from 'react';
-import { CircularProgress, ProgressBar } from '../ui/ProgressBar';
+import { ProgressBar } from '../ui/ProgressBar';
 import { Card, CardHeader, CardBody } from '../ui/Card';
 
-export const MacroCard = ({ macro, value, goal, color }) => (
-  <Card className="flex items-center justify-between p-4">
-    <div className="flex-1">
-      <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">{macro}</h4>
-      <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{Math.round(value)}g</p>
-      <p className="text-xs text-gray-500 dark:text-gray-500">Goal: {Math.round(goal)}g</p>
-    </div>
-    <div className="ml-4">
-      <CircularProgress 
-        value={value} 
-        max={goal} 
-        color={color}
-        size="sm"
-      />
-    </div>
-  </Card>
-);
-
-export const CalorieCard = ({ current, goal, remaining }) => (
-  <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white p-8">
-    <div className="text-center">
-      <p className="text-sm font-medium opacity-90">Today's Calories</p>
-      <h2 className="text-5xl font-bold my-2">{Math.round(current)}</h2>
-      <ProgressBar 
-        value={current} 
-        max={goal} 
-        color="bg-white opacity-50"
-        showLabel={false}
-      />
-      <p className="text-sm mt-3 opacity-90">{Math.round(remaining)} calories remaining</p>
-    </div>
-  </Card>
-);
-
-export const NutritionScore = ({ score = 85 }) => (
-  <Card className="text-center">
-    <CardHeader title="Nutrition Score" />
-    <div className="flex justify-center my-6">
-      <div className="relative w-24 h-24">
-        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-200 dark:text-gray-700"/>
-          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray={`${2.827 * score} 282.7`} className="text-green-500" />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-gray-900 dark:text-white">{score}</span>
-        </div>
+export const MacroCard = ({ macro, value, goal }) => (
+  <Card className="p-4 flex flex-col justify-between h-full">
+    <div className="mb-3">
+      <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{macro}</h4>
+      <div className="flex items-baseline gap-1 mt-2">
+        <span className="text-3xl font-extrabold text-[var(--text-primary)] stat-number">{Math.round(value)}g</span>
+        <span className="text-xs text-[var(--text-secondary)]">/ {Math.round(goal)}g</span>
       </div>
     </div>
-    <p className="text-sm text-gray-600 dark:text-gray-400">Great job today!</p>
+    <ProgressBar 
+      value={value} 
+      max={goal} 
+      color="bg-[var(--accent-primary)]"
+      showLabel={false}
+    />
+  </Card>
+);
+
+export const CalorieCard = ({ current, goal, remaining }) => {
+  const isOverBudget = remaining < 0;
+  
+  return (
+    <Card className="p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="flex-1 text-center md:text-left">
+        <p className="text-xs md:text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Today's Calories</p>
+        <h2 className="text-6xl md:text-7xl font-extrabold text-[var(--text-primary)] mt-2 mb-2 display-number tracking-tight">
+          {Math.round(current)} <span className="text-2xl md:text-3xl font-medium text-[var(--text-secondary)] uppercase tracking-wide">kcal</span>
+        </h2>
+        <p className="text-sm text-[var(--text-secondary)]">
+          Daily Goal: <span className="stat-number font-bold text-[var(--text-primary)]">{Math.round(goal)} kcal</span>
+        </p>
+      </div>
+      
+      <div className="w-full md:w-96 flex flex-col justify-center">
+        <div className="flex justify-between items-baseline mb-2">
+          <span className="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Calorie Balance</span>
+          <span className={`text-sm font-bold stat-number ${isOverBudget ? 'text-[var(--warning-state)]' : 'text-[var(--accent-primary)]'}`}>
+            {isOverBudget 
+              ? `${Math.abs(Math.round(remaining))} kcal over`
+              : `${Math.round(remaining)} kcal remaining`}
+          </span>
+        </div>
+        <ProgressBar 
+          value={current} 
+          max={goal} 
+          color={isOverBudget ? "bg-[var(--warning-state)]" : "bg-[var(--accent-primary)]"}
+          showLabel={false}
+        />
+      </div>
+    </Card>
+  );
+};
+
+export const NutritionScore = ({ score = 85 }) => (
+  <Card className="p-4 md:p-6">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="text-center md:text-left">
+        <h3 className="text-lg font-bold text-[var(--text-primary)]">Nutrition Score</h3>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Consistency check based on macro ratios</p>
+      </div>
+      
+      <div className="w-full md:w-80 flex flex-col justify-center">
+        <div className="flex justify-between items-baseline mb-1.5">
+          <span className="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-semibold">Daily Score</span>
+          <span className="text-2xl font-extrabold text-[var(--text-primary)] stat-number">{score} / 100</span>
+        </div>
+        <ProgressBar 
+          value={score} 
+          max={100} 
+          color="bg-[var(--accent-primary)]"
+          showLabel={false}
+        />
+      </div>
+    </div>
   </Card>
 );
