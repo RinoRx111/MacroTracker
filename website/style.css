@@ -63,6 +63,16 @@ body {
   animation: bounceSlow 3s ease-in-out infinite;
 }
 
+.logo-image {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  display: block;
+  border-radius: 16px;
+  filter: drop-shadow(0 4px 12px rgba(159, 232, 112, 0.15));
+  animation: bounceSlow 3s ease-in-out infinite;
+}
+
 .app-title {
   font-family: var(--font-display);
   font-size: 2.25rem;

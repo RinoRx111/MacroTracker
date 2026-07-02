@@ -31,6 +31,7 @@
   "build": {
     "appId": "com.macrotracker.app",
     "productName": "MacroTracker",
+    "icon": "public/favicon.ico",
     "directories": {
       "output": "dist-desktop"
     },

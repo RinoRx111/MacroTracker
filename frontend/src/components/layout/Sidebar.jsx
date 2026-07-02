@@ -12,8 +12,9 @@ export const Sidebar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) =>
 
   return (
     <div className="hidden md:flex flex-col w-64 bg-[var(--bg-card)] border-r border-[var(--border-main)] h-screen sticky top-0">
-      <div className="p-6 border-b border-[var(--border-main)]">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+      <div className="p-6 border-b border-[var(--border-main)] flex items-center gap-3">
+        <img src="/logo.png" alt="MacroTracker Logo" className="w-8 h-8 rounded-lg object-cover" />
+        <h1 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
           MacroTracker
         </h1>
       </div>
@@ -54,9 +55,12 @@ export const Navbar = ({ activeLink, setActiveLink, darkMode, setDarkMode }) => 
   return (
     <div className="md:hidden sticky top-0 z-40 bg-[var(--bg-card)] border-b border-[var(--border-main)]">
       <div className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
-          MacroTracker
-        </h1>
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="MacroTracker Logo" className="w-7 h-7 rounded-lg object-cover" />
+          <h1 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
+            MacroTracker
+          </h1>
+        </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="text-2xl text-[var(--text-primary)]"
